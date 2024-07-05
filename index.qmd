@@ -1,0 +1,175 @@
+---
+title: "DimensionalData.jl"
+subtitle: ""
+author:
+  - name: Rafael Schouten
+    orcid: 
+    email: rafaelschouten@gmail.com
+    affiliation: 
+      - name: Globe Intstitute, Copenhagen University
+      - department: Section for Biodiversity
+date: "2024-07-10"
+# bibliography: AutoDiff.bib
+engine: julia
+format:
+  revealjs:
+    incremental: true
+    toc: true
+    toc-depth: 1
+    toc-incremental: false
+    slide-number: true
+    overview: true
+    code-line-numbers: false
+    theme: [default, style.scss]
+    backgroundcolor: e2e2e3
+execute:
+    echo: true
+---
+
+# DimensionalData.jl
+
+## Why this package?
+
+## Geospatial data manipulation
+
+- Geospatial rasters data comes as arrays or collections of arrays
+- These usually have named dimensions and lookup values for 2-N dimensions
+- Multi-array datasets share some or all dimensions
+
+## Other data 
+
+- Lots of non-geospatial data follows similar patterns
+- We should share base code accross fields
+- Extensible: abstract types, simple extensible interface
+
+## Why not use existing package?
+
+- Other options were not extensible enough
+- I had to change too many things to get through PR reviews
+- The lisp curse
+
+[Docs](https://rafaqz.github.io/DimensionalData.jl/v0.27.3/)
+
+# Constructors
+
+1 dimensional with a categorical X dimension
+
+```{julia}
+using DimensionalData, CairoMakie
+A = DimArray([1, 2, 3], X([:a, :b, :c]))
+Makie.plot(A)
+```
+
+---
+
+Or 2 dimensional with arbitrary dim names:
+
+```{julia}
+using DimensionalData, CairoMakie
+z = rand(3, 4)
+A = DimArray(z, (a=[:a, :b, :c], b=10.0:10:40.0))
+Makie.plot(A)
+```
+
+---
+
+Direct constructors
+
+```{julia}
+A = rand(X(20:2:50), Y(4))
+Makie.plot(A; colormap=:magma)
+```
+
+`fill`, `zeros`, `ones` work the same way. 
+
+## Dimensions
+
+Wrappers types that mark another object as belonging to a dimension:
+
+```{julia}
+X(1)
+```
+
+## Lookups
+
+`Lookup <: AbstractArray` arrays that hold another AbstractArray with lookup metadata.
+like is the lookup points or intervals, sampled or categorical. 
+
+These properties change how selectors work for both correctness and performance
+
+Mostly, lookups are generated automatically by any `AbstractDimArray` constructor,
+you can ignore them until you need something specific.
+
+# Named indexing
+
+No-cost abstractions
+
+```{julia}
+using DimensionalData, BenchmarkTools
+A = rand(X(10), Y(5))
+A[Y(4), X(7)]
+# alternate syntax
+A[Y=4, X=7]
+
+@btime $A[Y(4), X(7)]
+@btime $A[7, 4]
+```
+
+# Selectors
+
+Fast lookups
+
+```{julia}
+using DimensionalData, BenchmarkTools, Dates
+using DimensionalData.Lookups
+A = DimArray([1, 2, 3, 4], (X([10.0, 20.0, 40.0, 80.0])))
+A[X(At(80.0))]
+A[X(Near(85))]
+```
+
+Lookups over Intervals
+
+```{julia}
+A = DimArray(100:100:9900, X(1.0:1.0:99.0; sampling=Intervals(Start())))
+bounds(A, X)
+A[X(Contains(9.5))]
+```
+
+## Base methods
+
+`dims` keywords in Base can use `Dimension`, dimension type or `Symbol`
+
+```{juliia}
+A = rand(X(20:10:40), Y(4))
+reverse(A; dims=Y)
+```
+
+# DimensionalData methods
+
+- `broadcast_dims`: dimensionally aware broadcasts - `@d` coming soon!
+- `groupby`: dimensional groupby: group data by lookup values
+
+# Plots.jl
+
+```{jj}
+using Plots
+Plots.scatter(rand(X([:a, :b, :c, :d])))
+```
+
+# Makie.jl
+
+```{jj}
+using CairoMakie, Distributions
+Makie.heatmap(rand(Normal(), X(100:10:200), Y([:a, :b, :c])))
+```
+
+
+# Integrations
+
+- [Rasters]()
+- [YAXArrays]() 
+- [ClimateBase]()
+- [AstroImages]()
+- [Arviz]() (even does python XArray <-> DimensionalData conversions)
+- [DynamicGrids]()
+

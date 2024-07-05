@@ -1,0 +1,20 @@
+$lightgrey: #e2e2e3;
+$blue: #0087d7;
+$orange: #ff875f;
+
+/*-- scss:defaults --*/
+$presentation-heading-color: $orange;
+
+/*-- scss:rules --*/
+
+.reveal section h2 {
+  color: $orange;
+}
+
+ul {
+  color: $blue;
+}
+
+.revearl-viewport {
+  background-color: $lightgrey;
+}
