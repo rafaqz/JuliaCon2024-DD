@@ -66,8 +66,7 @@ Or 2 dimensional with arbitrary dim names:
 
 ```{julia}
 using DimensionalData, CairoMakie
-z = rand(3, 4)
-A = DimArray(z, (a=[:a, :b, :c], b=10.0:10:40.0))
+A = DimArray(rand(3, 4), (a=[:a, :b, :c], b=10.0:10:40.0))
 Makie.plot(A)
 ```
 
@@ -76,8 +75,7 @@ Makie.plot(A)
 Direct constructors
 
 ```{julia}
-A = rand(X(20:2:50), Y(4))
-Makie.plot(A; colormap=:magma)
+Makie.plot(rand(X(20:2:50), Y(4)))
 ```
 
 `fill`, `zeros`, `ones` work the same way. 
@@ -92,13 +90,13 @@ X(1)
 
 ## Lookups
 
-`Lookup <: AbstractArray` arrays that hold another AbstractArray with lookup metadata.
-like is the lookup points or intervals, sampled or categorical. 
-
-These properties change how selectors work for both correctness and performance
-
-Mostly, lookups are generated automatically by any `AbstractDimArray` constructor,
-you can ignore them until you need something specific.
+- `Lookup <: AbstractArray` arrays that hold another AbstractArray with lookup metadata.
+  - points or intervals
+  - sampled or categorical. 
+  - `Lookup`s are extensible, Rasters.jl lookups have a coordinate reference system
+- These properties change how selectors work for both correctness and performance
+- Mostly, lookups are generated automatically by any `AbstractDimArray` constructor,
+  - you can ignore them until you need something specific.
 
 # Named indexing
 
@@ -139,7 +137,7 @@ A[X(Contains(9.5))]
 
 `dims` keywords in Base can use `Dimension`, dimension type or `Symbol`
 
-```{juliia}
+```{julia}
 A = rand(X(20:10:40), Y(4))
 reverse(A; dims=Y)
 ```
@@ -151,18 +149,17 @@ reverse(A; dims=Y)
 
 # Plots.jl
 
-```{jj}
+```{julia}
 using Plots
 Plots.scatter(rand(X([:a, :b, :c, :d])))
 ```
 
 # Makie.jl
 
-```{jj}
+```{julia}
 using CairoMakie, Distributions
 Makie.heatmap(rand(Normal(), X(100:10:200), Y([:a, :b, :c])))
 ```
-
 
 # Integrations
 
