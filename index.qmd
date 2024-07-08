@@ -25,23 +25,21 @@ execute:
     echo: true
 ---
 
-# Why anyother named array package?
+## Why anyother named array package?
 
 - Geospatial raster data are essentially 2-N dimensional arrays
-- They usually have named dimensions and lookup values 
-- There are a _lot_ of lookup configurations possible in the wild
-- Multi-array datasets that share some or all dimensions are very common
-- Other data follows similar patterns, so make it generic
+- They have named dimensions and lookup values 
+- There are a _lot_ of lookup configurations
+- Multi-array datasets that share some or all dimensions are common
+- But other data follows similar patterns 
+- So make it generic and extensible to maximise contributions
 
-# Why not use existing package?
+# Dimensions
 
-- Other options were not extensible enough
-- I had to change too many things to get through PR reviews
-- The lisp curse
 
-## Dimensions
+## Wrappers types 
 
-Wrappers types mark an object belongs to a dimension:
+Dimension wrappers mark an object belongs to a dimension:
 \
 ```{julia}
 using DimensionalData 
@@ -58,13 +56,14 @@ X(Not(At(70)))
 
 ---
 
-Or can be used in `dims` keywords:
+They can be used in `dims` keywords:
+\
 ```julia
 mapslices(sum, A; dims=X)
 ```
 
 But Symbols work too there:
-
+\
 ```julia
 mapslices(sum, A; dims=:X)
 ```
@@ -83,7 +82,7 @@ Arbitrary dimensions (everything else)
 Dim{:name}
 ```
 
-## Lookups
+# Lookups
 
 - `Lookup <: AbstractArray` arrays that hold another AbstractArray with lookup metadata.
   - points or intervals
@@ -95,40 +94,44 @@ Dim{:name}
 
 # Array Constructors
 
-1 dimensional with a categorical X dimension
+## 1 dimensional
+
+With a categorical X dimension
 
 ```{julia}
-using DimensionalData, CairoMakie
 A = DimArray([1, 2, 3], X([:a, :b, :c]))
-Makie.plot(A)
+```
+
+## N dimensional 
+
+With standard dims:
+
+```{julia}
+A = DimArray(rand(3, 4), (X([:a, :b, :c]), Ti(10.0:10:40.0)))
 ```
 
 ---
 
-Or 2 dimensional with arbitrary dim names:
+With arbitrary dimension names:
 
 ```{julia}
-using DimensionalData, CairoMakie
 A = DimArray(rand(3, 4), (a=[:a, :b, :c], b=10.0:10:40.0))
-Makie.plot(A)
 ```
 
----
+## Direct constructors
 
-Direct constructors
+`rand`, ``fill`, `zeros`, `ones` work the same way. 
 
 ```{julia}
-Makie.plot(rand(X(20:2:50), Y(4)))
+rand(X(20:2:50), Y(4))
 ```
-
-`fill`, `zeros`, `ones` work the same way. 
 
 # Named indexing
 
 No-cost abstractions
 
 ```{julia}
-using DimensionalData, BenchmarkTools
+using BenchmarkTools
 A = rand(X(10), Y(5))
 
 @btime $A[7, 4]        # Base syntax
@@ -141,8 +144,6 @@ A = rand(X(10), Y(5))
 ## Fast lookups
 \
 ```{julia}
-using DimensionalData, BenchmarkTools, Dates
-using DimensionalData.Lookups
 A = DimArray([1, 2, 3, 4], (X([10.0, 20.0, 40.0, 80.0])))
 A[X(At(80.0))]
 A[X(Near(85))]
@@ -152,8 +153,8 @@ A[X(Near(85))]
 ## Lookups over Intervals
 \
 ```{julia}
+using DimensionalData.Lookups
 A = DimArray(100:100:9900, X(1.0:1.0:99.0; sampling=Intervals(Start())))
-bounds(A, X)
 A[X(Contains(9.5))]
 ```
 
@@ -187,13 +188,16 @@ Makie.heatmap(rand(Normal(), X(100:10:200), Y([:a, :b, :c])))
 
 # Integrations
 
-- [Rasters]()
-- [YAXArrays]() 
-- [ClimateBase]()
-- [AstroImages]()
-- [Arviz]()
-- [DynamicGrids]()
+- [Rasters.jl]()
+- [YAXArrays.jl]() 
+- [ClimateBase.jl]()
+- [AstroImages.jl]()
+- [Arviz.jl]()
+- [DynamicGrids.jl]()
+- [PyramidScheme.jl]()
 
-# Docs
+# New Docs!
+
+(Thanks Lazaro Alonzo)
 
 [Docs](https://rafaqz.github.io/DimensionalData.jl/v0.27.3/)
