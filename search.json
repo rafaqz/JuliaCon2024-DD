@@ -1,0 +1,51 @@
+[
+  {
+    "objectID": "index.html#dimensions",
+    "href": "index.html#dimensions",
+    "title": "DimensionalData.jl",
+    "section": "Dimensions",
+    "text": "Dimensions\nWrappers types mark an object belongs to a dimension:\n\n\nusing DimensionalData \nX(1)\n\nX 1\n\n\n\n\n\nX(50:10:100)\n\nX 50:10:100\n\n\n\n\n\nX(Not(At(70)))\n\nX InvertedIndices.InvertedIndex{At{Int64, Nothing, Nothing}}(At(70, nothing, nothing))"
+  },
+  {
+    "objectID": "index.html#lookups",
+    "href": "index.html#lookups",
+    "title": "DimensionalData.jl",
+    "section": "Lookups",
+    "text": "Lookups\n\nLookup &lt;: AbstractArray arrays that hold another AbstractArray with lookup metadata.\n\npoints or intervals\nsampled or categorical.\nLookups are extensible, Rasters.jl lookups have a coordinate reference system\n\nThese properties change how selectors work for both correctness and performance\nMostly, lookups are generated automatically by any AbstractDimArray constructor,\n\nyou can ignore them until you need something specific."
+  },
+  {
+    "objectID": "index.html#fast-lookups",
+    "href": "index.html#fast-lookups",
+    "title": "DimensionalData.jl",
+    "section": "Fast lookups",
+    "text": "Fast lookups\n\n\n\nusing DimensionalData, BenchmarkTools, Dates\nusing DimensionalData.Lookups\nA = DimArray([1, 2, 3, 4], (X([10.0, 20.0, 40.0, 80.0])))\nA[X(At(80.0))]\nA[X(Near(85))]\n\n4"
+  },
+  {
+    "objectID": "index.html#lookups-over-intervals",
+    "href": "index.html#lookups-over-intervals",
+    "title": "DimensionalData.jl",
+    "section": "Lookups over Intervals",
+    "text": "Lookups over Intervals\n\n\n\nA = DimArray(100:100:9900, X(1.0:1.0:99.0; sampling=Intervals(Start())))\nbounds(A, X)\nA[X(Contains(9.5))]\n\n900"
+  },
+  {
+    "objectID": "index.html#base-methods-dims-keywords",
+    "href": "index.html#base-methods-dims-keywords",
+    "title": "DimensionalData.jl",
+    "section": "Base methods: dims keywords",
+    "text": "Base methods: dims keywords\n\n\n\nA = rand(X(20:10:40), Y([:a, :b, :c]))\nreverse(A; dims=Y)\n\n╭─────────────────────────╮\n│ 3×3 DimArray{Float64,2} │\n├─────────────────────────┴──────────────────────────── dims ┐\n  ↓ X Sampled{Int64} 20:10:40 ForwardOrdered Regular Points,\n  → Y Categorical{Symbol} [:c, :b, :a] ReverseOrdered\n└────────────────────────────────────────────────────────────┘\n  ↓ →   :c         :b        :a\n 20    0.950757   0.84083   0.076647\n 30    0.0232257  0.864997  0.489338\n 40    0.892622   0.181889  0.769402"
+  },
+  {
+    "objectID": "index.html#plots.jl",
+    "href": "index.html#plots.jl",
+    "title": "DimensionalData.jl",
+    "section": "Plots.jl",
+    "text": "Plots.jl\n\nusing Plots\nPlots.scatter(rand(X([:a, :b, :c, :d])))"
+  },
+  {
+    "objectID": "index.html#makie.jl",
+    "href": "index.html#makie.jl",
+    "title": "DimensionalData.jl",
+    "section": "Makie.jl",
+    "text": "Makie.jl\n\nusing CairoMakie, Distributions\nMakie.heatmap(rand(Normal(), X(100:10:200), Y([:a, :b, :c])))"
+  }
+]
