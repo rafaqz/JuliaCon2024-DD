@@ -32,7 +32,7 @@
     "href": "index.html#base-methods-dims-keywords",
     "title": "DimensionalData.jl",
     "section": "Base methods: dims keywords",
-    "text": "Base methods: dims keywords\n\n\n\nA = rand(X(20:10:40), Y([:a, :b, :c]))\nreverse(A; dims=Y)\n\n╭─────────────────────────╮\n│ 3×3 DimArray{Float64,2} │\n├─────────────────────────┴──────────────────────────── dims ┐\n  ↓ X Sampled{Int64} 20:10:40 ForwardOrdered Regular Points,\n  → Y Categorical{Symbol} [:c, :b, :a] ReverseOrdered\n└────────────────────────────────────────────────────────────┘\n  ↓ →   :c         :b        :a\n 20    0.950757   0.84083   0.076647\n 30    0.0232257  0.864997  0.489338\n 40    0.892622   0.181889  0.769402"
+    "text": "Base methods: dims keywords\n\n\n\nA = rand(X(20:10:40), Y([:a, :b, :c]))\nreverse(A; dims=Y)\n\n╭─────────────────────────╮\n│ 3×3 DimArray{Float64,2} │\n├─────────────────────────┴──────────────────────────── dims ┐\n  ↓ X Sampled{Int64} 20:10:40 ForwardOrdered Regular Points,\n  → Y Categorical{Symbol} [:c, :b, :a] ReverseOrdered\n└────────────────────────────────────────────────────────────┘\n  ↓ →   :c        :b        :a\n 20    0.705031  0.720388  0.540458\n 30    0.619599  0.616244  0.531478\n 40    0.254072  0.141102  0.855451"
   },
   {
     "objectID": "index.html#plots.jl",
