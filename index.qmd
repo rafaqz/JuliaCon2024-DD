@@ -13,7 +13,7 @@ date: "2024-07-10"
 engine: julia
 format:
   revealjs:
-    incremental: false
+    incremental: true
     toc: false
     toc-depth: 1
     toc-incremental: false
@@ -28,31 +28,48 @@ execute:
 ## Why another named array package?
 
 ::: {.incremental}
-- Geospatial data have 
-  - named dimensions and lookup values 
-  - a _lot_ of lookup configurations no package could describe
-  - multi-array datasets
+- Geospatial data
+  - named dimensions and lookup values are ubiquitous
+  - there are a _lot_ of possible lookup configurations
+  - multi-array datasets are common (with shared dimensions)
 - ![xarray](https://xarray.dev/xarray-datastructure.png)
 :::
 
 # Dimensions
 
-## Dimension can hold anything
+## Dimension are wrappers
+
+```{julia}
+#| echo: false
+using DimensionalData 
+```
+
 \
 They mark that the wrapped object belongs to the dimension:
+
+. . .
+
+An integer:
 ```{julia}
-using DimensionalData 
 X(1)
 ```
+
+. . .
+
+A range:
 ```{julia}
 X(50:10:100)
 ```
+
+. . .
+
+A selector :
 ```{julia}
 X(Not(At(70)))
 ```
 
 --- 
-\
+
 \
 \
 "Standard" dimensions (90% of spatial data):
@@ -69,13 +86,13 @@ Dim{:name}
 
 # Lookups
 
-`AbstracArray`s that hold another `AbstractArray` and lookup traits
-
+- Hold lookup values along a dimension
+- `AbstracArray`s with lookup traits like `Points` or `Intervals`
 - `Sampled` and `Categorical` are the most common
 - mostly detected automatically in array constructors
-- traits assists both performance and correctness
+- advanced topic - see the docs!
 
-# Array Constructors
+# DimArray <: AbstractDimArray
 
 ```{julia}
 #| echo: false
@@ -84,35 +101,49 @@ global S
 ```
 
 ## 1 dimensional
-
-With a categorical X dimension
 \
-
 ```{julia}
 A = DimArray([1, 2, 3], X([:a, :b, :c]))
 ```
 
 ## N dimensional 
 
-With arbitrary `Dim` dimensions:
-
-```{julia}
-A = DimArray(rand(3, 4), (a=[:a, :b, :c], b=10.0:10:40.0))
-```
-
-With standard dimensions:
+With standard dimensions in a `Tuple`:
 
 ```{julia}
 A = DimArray(rand(3, 4), (X([:a, :b, :c]), Y(10.0:10:40.0)))
 ```
 
-# Stack Constructor
+---
+
+With arbitrary `Dim` dimensions, in a `NamedTuple`:
 
 ```{julia}
-S = DimStack(
-  (layer1=rand(Float32, 3, 4), layer2=zeros(Bool, 3, 4)), 
-  (X([:a, :b, :c]), Ti(10.0:10:40.0))
-)
+DimArray(rand(3, 4), (a=[:a, :b, :c], b=10.0:10:40.0))
+```
+
+---
+
+Shorthands: `rand`, `fill`, `zeros`, `ones` 
+
+```{julia}
+rand(X(6), Y(10:2:20))
+```
+
+# DimStack <: AbstractDimStack
+
+## Layers with the same dimensions
+\
+```{julia}
+ds = X([:a, :b, :c]), Ti(10.0:10:40.0)
+S = DimStack((layer1=rand(Float32, 3, 4), layer2=zeros(Bool, 3, 4)), ds)
+```
+
+## Layers with different dimensions:
+\
+```{julia}
+x, ti = X([:a, :b, :c]), Ti(10.0:10:40.0)
+DimStack((twodims=rand(Float32, x, ti), onedim=zeros(Bool, x)))
 ```
 
 # Named indexing
@@ -120,7 +151,7 @@ S = DimStack(
 DimArray:
 ```{julia}
 using BenchmarkTools
-@btime $A[3, 4]        # Base Julia syntax
+@btime $A[3, 4]        # Base Julia Array syntax
 @btime $A[Y(4), X(3)]  # Dimension wrappers
 @btime $A[Y=4, X=3]    # Keyword syntax
 ```
@@ -132,6 +163,7 @@ DimStack:
 ```
 
 # Selectors
+- select data with lookup values
 
 ## At
 \
@@ -200,6 +232,11 @@ Makie.heatmap(rand(Normal(), X(100:10:200), Y([:a, :b, :c])))
 
 # Integrations
 
+- DimensionalData uses all abstract types so its extensible
+- Just `dims` and `rebuild` methods let other array types work like a `DimArray`
+
+## Some packages building on DimensionalData.jl
+
 - [Rasters.jl]()
 - [YAXArrays.jl]() 
 - [ClimateBase.jl]()
@@ -207,9 +244,12 @@ Makie.heatmap(rand(Normal(), X(100:10:200), Y([:a, :b, :c])))
 - [Arviz.jl]()
 - [DynamicGrids.jl]()
 - [PyramidScheme.jl]()
+- [Jump.jl]() (extension)
 
-# New Docs
+## Thanks
+\
+![](https://contrib.rocks/image?repo=rafaqz/DimensionalData.jl)
 
-(Thanks Lazaro Alonzo!)
+(And checkout the new docs by Lazaro Alonzo!)
 
 [Docs](https://rafaqz.github.io/DimensionalData.jl/v0.27.3/)
