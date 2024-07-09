@@ -13,7 +13,7 @@ date: "2024-07-10"
 engine: julia
 format:
   revealjs:
-    incremental: true
+    incremental: false
     toc: false
     toc-depth: 1
     toc-incremental: false
@@ -25,57 +25,42 @@ execute:
     echo: true
 ---
 
-## Why anyother named array package?
+## Why another named array package?
 
-- Geospatial raster data are essentially 2-N dimensional arrays
-- They have named dimensions and lookup values 
-- There are a _lot_ of lookup configurations
-- Multi-array datasets that share some or all dimensions are common
-- But other data follows similar patterns 
-- So make it generic and extensible to maximise contributions
+::: {.incremental}
+- Geospatial data have 
+  - named dimensions and lookup values 
+  - a _lot_ of lookup configurations no package could describe
+  - multi-array datasets
+- ![xarray](https://xarray.dev/xarray-datastructure.png)
+:::
 
 # Dimensions
 
-
-## Wrappers types 
-
-Dimension wrappers mark an object belongs to a dimension:
+## Dimension can hold anything
 \
+They mark that the wrapped object belongs to the dimension:
 ```{julia}
 using DimensionalData 
 X(1)
 ```
-\
 ```{julia}
 X(50:10:100)
 ```
-\
 ```{julia}
 X(Not(At(70)))
 ```
 
----
-
-They can be used in `dims` keywords:
-\
-```julia
-mapslices(sum, A; dims=X)
-```
-
-But Symbols work too there:
-\
-```julia
-mapslices(sum, A; dims=:X)
-```
-
 --- 
-
+\
+\
+\
 "Standard" dimensions (90% of spatial data):
 
 ```{julia}
 X, Y, Z, Ti
 ```
-
+\
 Arbitrary dimensions (everything else)
 
 ```{julia}
@@ -84,19 +69,24 @@ Dim{:name}
 
 # Lookups
 
-- `Lookup <: AbstractArray` arrays that hold another AbstractArray with lookup metadata.
-  - points or intervals
-  - sampled or categorical. 
-  - `Lookup`s are extensible, Rasters.jl lookups have a coordinate reference system
-- These properties change how selectors work for both correctness and performance
-- Mostly, lookups are generated automatically by any `AbstractDimArray` constructor,
-  - you can ignore them until you need something specific.
+`AbstracArray`s that hold another `AbstractArray` and lookup traits
+
+- `Sampled` and `Categorical` are the most common
+- mostly detected automatically in array constructors
+- traits assists both performance and correctness
 
 # Array Constructors
+
+```{julia}
+#| echo: false
+global A
+global S
+```
 
 ## 1 dimensional
 
 With a categorical X dimension
+\
 
 ```{julia}
 A = DimArray([1, 2, 3], X([:a, :b, :c]))
@@ -104,71 +94,93 @@ A = DimArray([1, 2, 3], X([:a, :b, :c]))
 
 ## N dimensional 
 
-With standard dims:
-
-```{julia}
-A = DimArray(rand(3, 4), (X([:a, :b, :c]), Ti(10.0:10:40.0)))
-```
-
----
-
-With arbitrary dimension names:
+With arbitrary `Dim` dimensions:
 
 ```{julia}
 A = DimArray(rand(3, 4), (a=[:a, :b, :c], b=10.0:10:40.0))
 ```
 
-## Direct constructors
-
-`rand`, ``fill`, `zeros`, `ones` work the same way. 
+With standard dimensions:
 
 ```{julia}
-rand(X(20:2:50), Y(4))
+A = DimArray(rand(3, 4), (X([:a, :b, :c]), Y(10.0:10:40.0)))
+```
+
+# Stack Constructor
+
+```{julia}
+S = DimStack(
+  (layer1=rand(Float32, 3, 4), layer2=zeros(Bool, 3, 4)), 
+  (X([:a, :b, :c]), Ti(10.0:10:40.0))
+)
 ```
 
 # Named indexing
 
-No-cost abstractions
-
+DimArray:
 ```{julia}
 using BenchmarkTools
-A = rand(X(10), Y(5))
+@btime $A[3, 4]        # Base Julia syntax
+@btime $A[Y(4), X(3)]  # Dimension wrappers
+@btime $A[Y=4, X=3]    # Keyword syntax
+```
 
-@btime $A[7, 4]        # Base syntax
-@btime $A[Y(4), X(7)]  # Dimension wrappers
-@btime $A[Y=4, X=7]    # Keyword syntax
+DimStack:
+```{julia}
+@btime $S[Ti(4), X(3)] # Dimension wrappers
+@btime $S[Ti=4, X=3]   # Keyword syntax
 ```
 
 # Selectors
 
-## Fast lookups
+## At
+\
+Find exact or approximate matches
 \
 ```{julia}
 A = DimArray([1, 2, 3, 4], (X([10.0, 20.0, 40.0, 80.0])))
 A[X(At(80.0))]
+```
+
+```{julia}
+A[X(At(80.09; atol=0.1))]
+```
+
+## Near
+\
+Find the closest match
+\
+```{julia}
 A[X(Near(85))]
 ```
 
-
-## Lookups over Intervals
+## Contains
+\
+Find the interval that contains a value
 \
 ```{julia}
+# Define a DimArray with Intervals lookup
 using DimensionalData.Lookups
 A = DimArray(100:100:9900, X(1.0:1.0:99.0; sampling=Intervals(Start())))
+# Index with Contains
 A[X(Contains(9.5))]
 ```
 
-## Base methods: `dims` keywords
+## .. (an IntervalSets.jl Interval)
+\
+Select data inside an interval
 \
 ```{julia}
-A = rand(X(20:10:40), Y([:a, :b, :c]))
-reverse(A; dims=Y)
+A[X=9.5 .. 15]
 ```
 
-# DimensionalData methods
-
-- `broadcast_dims`: dimensionally aware broadcasts - `@d` coming soon!
-- `groupby`: dimensional groupby: group data by lookup values
+## Where
+\
+Make dimensional queries
+\
+```{julia}
+A[X=Where(isodd)]
+```
 
 # Plotting
 
@@ -196,8 +208,8 @@ Makie.heatmap(rand(Normal(), X(100:10:200), Y([:a, :b, :c])))
 - [DynamicGrids.jl]()
 - [PyramidScheme.jl]()
 
-# New Docs!
+# New Docs
 
-(Thanks Lazaro Alonzo)
+(Thanks Lazaro Alonzo!)
 
 [Docs](https://rafaqz.github.io/DimensionalData.jl/v0.27.3/)
