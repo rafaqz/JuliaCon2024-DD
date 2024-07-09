@@ -1,59 +1,66 @@
 [
   {
-    "objectID": "index.html#why-anyother-named-array-package",
-    "href": "index.html#why-anyother-named-array-package",
+    "objectID": "index.html#why-another-named-array-package",
+    "href": "index.html#why-another-named-array-package",
     "title": "DimensionalData.jl",
-    "section": "Why anyother named array package?",
-    "text": "Why anyother named array package?\n\nGeospatial raster data are essentially 2-N dimensional arrays\nThey have named dimensions and lookup values\nThere are a lot of lookup configurations\nMulti-array datasets that share some or all dimensions are common\nBut other data follows similar patterns\nSo make it generic and extensible to maximise contributions"
+    "section": "Why another named array package?",
+    "text": "Why another named array package?\n\n\nGeospatial data have\n\nnamed dimensions and lookup values\na lot of lookup configurations no package could describe\nmulti-array datasets\n\n\n\n\nxarray"
   },
   {
-    "objectID": "index.html#wrappers-types",
-    "href": "index.html#wrappers-types",
+    "objectID": "index.html#dimension-can-hold-anything",
+    "href": "index.html#dimension-can-hold-anything",
     "title": "DimensionalData.jl",
-    "section": "Wrappers types",
-    "text": "Wrappers types\nDimension wrappers mark an object belongs to a dimension:\n\n\nusing DimensionalData \nX(1)\n\nX 1\n\n\n\n\n\nX(50:10:100)\n\nX 50:10:100\n\n\n\n\n\nX(Not(At(70)))\n\nX InvertedIndices.InvertedIndex{At{Int64, Nothing, Nothing}}(At(70, nothing, nothing))"
+    "section": "Dimension can hold anything",
+    "text": "Dimension can hold anything\n\nThey mark that the wrapped object belongs to the dimension:\n\nusing DimensionalData \nX(1)\n\nX 1\n\n\n\nX(50:10:100)\n\nX 50:10:100\n\n\n\nX(Not(At(70)))\n\nX InvertedIndices.InvertedIndex{At{Int64, Nothing, Nothing}}(At(70, nothing, nothing))"
   },
   {
     "objectID": "index.html#dimensional",
     "href": "index.html#dimensional",
     "title": "DimensionalData.jl",
     "section": "1 dimensional",
-    "text": "1 dimensional\nWith a categorical X dimension\n\nA = DimArray([1, 2, 3], X([:a, :b, :c]))\n\n╭─────────────────────────────╮\n│ 3-element DimArray{Int64,1} │\n├─────────────────────────────┴───────────────── dims ┐\n  ↓ X Categorical{Symbol} [:a, :b, :c] ForwardOrdered\n└─────────────────────────────────────────────────────┘\n :a  1\n :b  2\n :c  3"
+    "text": "1 dimensional\nWith a categorical X dimension\n\n\nA = DimArray([1, 2, 3], X([:a, :b, :c]))\n\n╭─────────────────────────────╮\n│ 3-element DimArray{Int64,1} │\n├─────────────────────────────┴───────────────── dims ┐\n  ↓ X Categorical{Symbol} [:a, :b, :c] ForwardOrdered\n└─────────────────────────────────────────────────────┘\n :a  1\n :b  2\n :c  3"
   },
   {
     "objectID": "index.html#n-dimensional",
     "href": "index.html#n-dimensional",
     "title": "DimensionalData.jl",
     "section": "N dimensional",
-    "text": "N dimensional\nWith standard dims:\n\nA = DimArray(rand(3, 4), (X([:a, :b, :c]), Ti(10.0:10:40.0)))\n\n╭─────────────────────────╮\n│ 3×4 DimArray{Float64,2} │\n├─────────────────────────┴──────────────────────────────────── dims ┐\n  ↓ X  Categorical{Symbol} [:a, :b, :c] ForwardOrdered,\n  → Ti Sampled{Float64} 10.0:10.0:40.0 ForwardOrdered Regular Points\n└────────────────────────────────────────────────────────────────────┘\n ↓ →  10.0        20.0       30.0       40.0\n  :a   0.687909    0.939606   0.204139   0.372711\n  :b   0.0290821   0.424595   0.719235   0.529432\n  :c   0.0773064   0.286555   0.828496   0.00608585"
+    "text": "N dimensional\nWith arbitrary Dim dimensions:\n\nA = DimArray(rand(3, 4), (a=[:a, :b, :c], b=10.0:10:40.0))\n\n╭─────────────────────────╮\n│ 3×4 DimArray{Float64,2} │\n├─────────────────────────┴─────────────────────────────────── dims ┐\n  ↓ a Categorical{Symbol} [:a, :b, :c] ForwardOrdered,\n  → b Sampled{Float64} 10.0:10.0:40.0 ForwardOrdered Regular Points\n└───────────────────────────────────────────────────────────────────┘\n ↓ →  10.0       20.0        30.0       40.0\n  :a   0.706735   0.813138    0.606526   0.698258\n  :b   0.275359   0.0802951   0.126824   0.261331\n  :c   0.790357   0.977797    0.223648   0.958858\n\n\nWith standard dimensions:\n\nA = DimArray(rand(3, 4), (X([:a, :b, :c]), Y(10.0:10:40.0)))\n\n╭─────────────────────────╮\n│ 3×4 DimArray{Float64,2} │\n├─────────────────────────┴─────────────────────────────────── dims ┐\n  ↓ X Categorical{Symbol} [:a, :b, :c] ForwardOrdered,\n  → Y Sampled{Float64} 10.0:10.0:40.0 ForwardOrdered Regular Points\n└───────────────────────────────────────────────────────────────────┘\n ↓ →  10.0        20.0       30.0       40.0\n  :a   0.0544759   0.805269   0.827125   0.669148\n  :b   0.225088    0.723879   0.893911   0.126772\n  :c   0.287564    0.463862   0.678344   0.303151"
   },
   {
-    "objectID": "index.html#direct-constructors",
-    "href": "index.html#direct-constructors",
+    "objectID": "index.html#at",
+    "href": "index.html#at",
     "title": "DimensionalData.jl",
-    "section": "Direct constructors",
-    "text": "Direct constructors\nrand, `fill, zeros, ones work the same way.\n\nrand(X(20:2:50), Y(4))\n\n╭──────────────────────────╮\n│ 16×4 DimArray{Float64,2} │\n├──────────────────────────┴────────────────────────── dims ┐\n  ↓ X Sampled{Int64} 20:2:50 ForwardOrdered Regular Points,\n  → Y\n└───────────────────────────────────────────────────────────┘\n 20  0.740799  0.290187   0.69751    0.0389455\n 22  0.920589  0.578487   0.0252006  0.86715\n 24  0.996876  0.362606   0.880516   0.273787\n 26  0.873344  0.0585718  0.137968   0.0631607\n 28  0.285445  0.775736   0.862139   0.273711\n  ⋮                                  \n 42  0.49401   0.409591   0.172074   0.853205\n 44  0.22934   0.37576    0.604537   0.128862\n 46  0.881916  0.0712272  0.173154   0.948845\n 48  0.311078  0.169286   0.764411   0.456048\n 50  0.105409  0.773586   0.571575   0.851294"
+    "section": "At",
+    "text": "At\n\nFind exact or approximate matches\n\n\nA = DimArray([1, 2, 3, 4], (X([10.0, 20.0, 40.0, 80.0])))\nA[X(At(80.0))]\n\n4\n\n\n\nA[X(At(80.09; atol=0.1))]\n\n4"
   },
   {
-    "objectID": "index.html#fast-lookups",
-    "href": "index.html#fast-lookups",
+    "objectID": "index.html#near",
+    "href": "index.html#near",
     "title": "DimensionalData.jl",
-    "section": "Fast lookups",
-    "text": "Fast lookups\n\n\n\nA = DimArray([1, 2, 3, 4], (X([10.0, 20.0, 40.0, 80.0])))\nA[X(At(80.0))]\nA[X(Near(85))]\n\n4"
+    "section": "Near",
+    "text": "Near\n\nFind the closest match\n\n\nA[X(Near(85))]\n\n4"
   },
   {
-    "objectID": "index.html#lookups-over-intervals",
-    "href": "index.html#lookups-over-intervals",
+    "objectID": "index.html#contains",
+    "href": "index.html#contains",
     "title": "DimensionalData.jl",
-    "section": "Lookups over Intervals",
-    "text": "Lookups over Intervals\n\n\n\nusing DimensionalData.Lookups\nA = DimArray(100:100:9900, X(1.0:1.0:99.0; sampling=Intervals(Start())))\nA[X(Contains(9.5))]\n\n900"
+    "section": "Contains",
+    "text": "Contains\n\nFind the interval that contains a value\n\n\n# Define a DimArray with Intervals lookup\nusing DimensionalData.Lookups\nA = DimArray(100:100:9900, X(1.0:1.0:99.0; sampling=Intervals(Start())))\n# Index with Contains\nA[X(Contains(9.5))]\n\n900"
   },
   {
-    "objectID": "index.html#base-methods-dims-keywords",
-    "href": "index.html#base-methods-dims-keywords",
+    "objectID": "index.html#an-intervalsets.jl-interval",
+    "href": "index.html#an-intervalsets.jl-interval",
     "title": "DimensionalData.jl",
-    "section": "Base methods: dims keywords",
-    "text": "Base methods: dims keywords\n\n\n\nA = rand(X(20:10:40), Y([:a, :b, :c]))\nreverse(A; dims=Y)\n\n╭─────────────────────────╮\n│ 3×3 DimArray{Float64,2} │\n├─────────────────────────┴──────────────────────────── dims ┐\n  ↓ X Sampled{Int64} 20:10:40 ForwardOrdered Regular Points,\n  → Y Categorical{Symbol} [:c, :b, :a] ReverseOrdered\n└────────────────────────────────────────────────────────────┘\n  ↓ →   :c        :b        :a\n 20    0.1735    0.553663  0.144526\n 30    0.853952  0.749883  0.94251\n 40    0.583242  0.564086  0.980474"
+    "section": ".. (an IntervalSets.jl Interval)",
+    "text": ".. (an IntervalSets.jl Interval)\n\nSelect data inside an interval\n\n\nA[X=9.5 .. 15]\n\n╭─────────────────────────────╮\n│ 5-element DimArray{Int64,1} │\n├─────────────────────────────┴──────────────────────────────────────── dims ┐\n  ↓ X Sampled{Float64} 10.0:1.0:14.0 ForwardOrdered Regular Intervals{Start}\n└────────────────────────────────────────────────────────────────────────────┘\n 10.0  1000\n 11.0  1100\n 12.0  1200\n 13.0  1300\n 14.0  1400"
+  },
+  {
+    "objectID": "index.html#where",
+    "href": "index.html#where",
+    "title": "DimensionalData.jl",
+    "section": "Where",
+    "text": "Where\n\nMake dimensional queries\n\n\nA[X=Where(isodd)]\n\n╭──────────────────────────────╮\n│ 50-element DimArray{Int64,1} │\n├──────────────────────────────┴───────────────────────────────────────── dims ┐\n  ↓ X Sampled{Float64} [1.0, 3.0, …, 97.0, 99.0] ForwardOrdered Irregular Intervals{Start}\n└──────────────────────────────────────────────────────────────────────────────┘\n  1.0   100\n  3.0   300\n  5.0   500\n  7.0   700\n  9.0   900\n 11.0  1100\n  ⋮    \n 91.0  9100\n 93.0  9300\n 95.0  9500\n 97.0  9700\n 99.0  9900"
   },
   {
     "objectID": "index.html#plots.jl",
