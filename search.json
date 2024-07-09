@@ -4,28 +4,42 @@
     "href": "index.html#why-another-named-array-package",
     "title": "DimensionalData.jl",
     "section": "Why another named array package?",
-    "text": "Why another named array package?\n\n\nGeospatial data have\n\nnamed dimensions and lookup values\na lot of lookup configurations no package could describe\nmulti-array datasets\n\n\n\n\nxarray"
+    "text": "Why another named array package?\n\n\nGeospatial data\n\nnamed dimensions and lookup values are ubiquitous\nthere are a lot of possible lookup configurations\nmulti-array datasets are common (with shared dimensions)\n\n\n\n\nxarray"
   },
   {
-    "objectID": "index.html#dimension-can-hold-anything",
-    "href": "index.html#dimension-can-hold-anything",
+    "objectID": "index.html#dimension-are-wrappers",
+    "href": "index.html#dimension-are-wrappers",
     "title": "DimensionalData.jl",
-    "section": "Dimension can hold anything",
-    "text": "Dimension can hold anything\n\nThey mark that the wrapped object belongs to the dimension:\n\nusing DimensionalData \nX(1)\n\nX 1\n\n\n\nX(50:10:100)\n\nX 50:10:100\n\n\n\nX(Not(At(70)))\n\nX InvertedIndices.InvertedIndex{At{Int64, Nothing, Nothing}}(At(70, nothing, nothing))"
+    "section": "Dimension are wrappers",
+    "text": "Dimension are wrappers\n\nThey mark that the wrapped object belongs to the dimension:\n\nAn integer:\n\nX(1)\n\nX 1\n\n\n\n\nA range:\n\nX(50:10:100)\n\nX 50:10:100\n\n\n\n\nA selector :\n\nX(Not(At(70)))\n\nX InvertedIndices.InvertedIndex{At{Int64, Nothing, Nothing}}(At(70, nothing, nothing))"
   },
   {
     "objectID": "index.html#dimensional",
     "href": "index.html#dimensional",
     "title": "DimensionalData.jl",
     "section": "1 dimensional",
-    "text": "1 dimensional\nWith a categorical X dimension\n\n\nA = DimArray([1, 2, 3], X([:a, :b, :c]))\n\n╭─────────────────────────────╮\n│ 3-element DimArray{Int64,1} │\n├─────────────────────────────┴───────────────── dims ┐\n  ↓ X Categorical{Symbol} [:a, :b, :c] ForwardOrdered\n└─────────────────────────────────────────────────────┘\n :a  1\n :b  2\n :c  3"
+    "text": "1 dimensional\n\n\n\nA = DimArray([1, 2, 3], X([:a, :b, :c]))\n\n╭─────────────────────────────╮\n│ 3-element DimArray{Int64,1} │\n├─────────────────────────────┴───────────────── dims ┐\n  ↓ X Categorical{Symbol} [:a, :b, :c] ForwardOrdered\n└─────────────────────────────────────────────────────┘\n :a  1\n :b  2\n :c  3"
   },
   {
     "objectID": "index.html#n-dimensional",
     "href": "index.html#n-dimensional",
     "title": "DimensionalData.jl",
     "section": "N dimensional",
-    "text": "N dimensional\nWith arbitrary Dim dimensions:\n\nA = DimArray(rand(3, 4), (a=[:a, :b, :c], b=10.0:10:40.0))\n\n╭─────────────────────────╮\n│ 3×4 DimArray{Float64,2} │\n├─────────────────────────┴─────────────────────────────────── dims ┐\n  ↓ a Categorical{Symbol} [:a, :b, :c] ForwardOrdered,\n  → b Sampled{Float64} 10.0:10.0:40.0 ForwardOrdered Regular Points\n└───────────────────────────────────────────────────────────────────┘\n ↓ →  10.0       20.0        30.0       40.0\n  :a   0.706735   0.813138    0.606526   0.698258\n  :b   0.275359   0.0802951   0.126824   0.261331\n  :c   0.790357   0.977797    0.223648   0.958858\n\n\nWith standard dimensions:\n\nA = DimArray(rand(3, 4), (X([:a, :b, :c]), Y(10.0:10:40.0)))\n\n╭─────────────────────────╮\n│ 3×4 DimArray{Float64,2} │\n├─────────────────────────┴─────────────────────────────────── dims ┐\n  ↓ X Categorical{Symbol} [:a, :b, :c] ForwardOrdered,\n  → Y Sampled{Float64} 10.0:10.0:40.0 ForwardOrdered Regular Points\n└───────────────────────────────────────────────────────────────────┘\n ↓ →  10.0        20.0       30.0       40.0\n  :a   0.0544759   0.805269   0.827125   0.669148\n  :b   0.225088    0.723879   0.893911   0.126772\n  :c   0.287564    0.463862   0.678344   0.303151"
+    "text": "N dimensional\nWith standard dimensions in a Tuple:\n\nA = DimArray(rand(3, 4), (X([:a, :b, :c]), Y(10.0:10:40.0)))\n\n╭─────────────────────────╮\n│ 3×4 DimArray{Float64,2} │\n├─────────────────────────┴─────────────────────────────────── dims ┐\n  ↓ X Categorical{Symbol} [:a, :b, :c] ForwardOrdered,\n  → Y Sampled{Float64} 10.0:10.0:40.0 ForwardOrdered Regular Points\n└───────────────────────────────────────────────────────────────────┘\n ↓ →  10.0       20.0        30.0       40.0\n  :a   0.241505   0.0282003   0.462848   0.337448\n  :b   0.370021   0.6171      0.588097   0.499839\n  :c   0.842621   0.509002    0.762115   0.143347"
+  },
+  {
+    "objectID": "index.html#layers-with-the-same-dimensions",
+    "href": "index.html#layers-with-the-same-dimensions",
+    "title": "DimensionalData.jl",
+    "section": "Layers with the same dimensions",
+    "text": "Layers with the same dimensions\n\n\n\nds = X([:a, :b, :c]), Ti(10.0:10:40.0)\nS = DimStack((layer1=rand(Float32, 3, 4), layer2=zeros(Bool, 3, 4)), ds)\n\n╭──────────────╮\n│ 3×4 DimStack │\n├──────────────┴─────────────────────────────────────────────── dims ┐\n  ↓ X  Categorical{Symbol} [:a, :b, :c] ForwardOrdered,\n  → Ti Sampled{Float64} 10.0:10.0:40.0 ForwardOrdered Regular Points\n├──────────────────────────────────────────────────────────── layers ┤\n  :layer1 eltype: Float32 dims: X, Ti size: 3×4\n  :layer2 eltype: Bool dims: X, Ti size: 3×4\n└────────────────────────────────────────────────────────────────────┘"
+  },
+  {
+    "objectID": "index.html#layers-with-different-dimensions",
+    "href": "index.html#layers-with-different-dimensions",
+    "title": "DimensionalData.jl",
+    "section": "Layers with different dimensions:",
+    "text": "Layers with different dimensions:\n\n\n\nx, ti = X([:a, :b, :c]), Ti(10.0:10:40.0)\nDimStack((twodims=rand(Float32, x, ti), onedim=zeros(Bool, x)))\n\n╭──────────────╮\n│ 3×4 DimStack │\n├──────────────┴─────────────────────────────────────────────── dims ┐\n  ↓ X  Categorical{Symbol} [:a, :b, :c] ForwardOrdered,\n  → Ti Sampled{Float64} 10.0:10.0:40.0 ForwardOrdered Regular Points\n├──────────────────────────────────────────────────────────── layers ┤\n  :twodims eltype: Float32 dims: X, Ti size: 3×4\n  :onedim  eltype: Bool dims: X size: 3\n└────────────────────────────────────────────────────────────────────┘"
   },
   {
     "objectID": "index.html#at",
@@ -75,5 +89,19 @@
     "title": "DimensionalData.jl",
     "section": "Makie.jl",
     "text": "Makie.jl\n\nusing CairoMakie, Distributions\nMakie.heatmap(rand(Normal(), X(100:10:200), Y([:a, :b, :c])))"
+  },
+  {
+    "objectID": "index.html#some-packages-building-on-dimensionaldata.jl",
+    "href": "index.html#some-packages-building-on-dimensionaldata.jl",
+    "title": "DimensionalData.jl",
+    "section": "Some packages building on DimensionalData.jl",
+    "text": "Some packages building on DimensionalData.jl\n\nRasters.jl\nYAXArrays.jl\nClimateBase.jl\nAstroImages.jl\nArviz.jl\nDynamicGrids.jl\nPyramidScheme.jl\nJump.jl (extension)"
+  },
+  {
+    "objectID": "index.html#thanks",
+    "href": "index.html#thanks",
+    "title": "DimensionalData.jl",
+    "section": "Thanks",
+    "text": "Thanks\n\n\n(And checkout the new docs by Lazaro Alonzo!)\nDocs"
   }
 ]

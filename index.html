@@ -420,11 +420,11 @@ Rafael Schouten
 <h2>Why another named array package?</h2>
 <div>
 <ul>
-<li class="fragment">Geospatial data have
+<li class="fragment">Geospatial data
 <ul>
-<li class="fragment">named dimensions and lookup values</li>
-<li class="fragment">a <em>lot</em> of lookup configurations no package could describe</li>
-<li class="fragment">multi-array datasets</li>
+<li class="fragment">named dimensions and lookup values are ubiquitous</li>
+<li class="fragment">there are a <em>lot</em> of possible lookup configurations</li>
+<li class="fragment">multi-array datasets are common (with shared dimensions)</li>
 </ul></li>
 <li class="fragment"><div class="quarto-figure quarto-figure-center">
 <figure>
@@ -440,27 +440,35 @@ Rafael Schouten
 <h1>Dimensions</h1>
 
 </section>
-<section id="dimension-can-hold-anything" class="slide level2">
-<h2>Dimension can hold anything</h2>
+<section id="dimension-are-wrappers" class="slide level2">
+<h2>Dimension are wrappers</h2>
 <p><br>
 They mark that the wrapped object belongs to the dimension:</p>
-<div id="2" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DimensionalData</span> </span>
-<span id="cb1-2"><a aria-hidden="true" tabindex="-1"></a><span class="fu">X</span>(<span class="fl">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="fragment">
+<p>An integer:</p>
+<div id="4" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a aria-hidden="true" tabindex="-1"></a><span class="fu">X</span>(<span class="fl">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>X 1</code></pre>
 </div>
 </div>
-<div id="4" class="cell" data-execution_count="1">
+</div>
+<div class="fragment">
+<p>A range:</p>
+<div id="6" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a aria-hidden="true" tabindex="-1"></a><span class="fu">X</span>(<span class="fl">50</span><span class="op">:</span><span class="fl">10</span><span class="op">:</span><span class="fl">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>X 50:10:100</code></pre>
 </div>
 </div>
-<div id="6" class="cell" data-execution_count="1">
+</div>
+<div class="fragment">
+<p>A selector :</p>
+<div id="8" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a aria-hidden="true" tabindex="-1"></a><span class="fu">X</span>(<span class="fu">Not</span>(<span class="fu">At</span>(<span class="fl">70</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>X InvertedIndices.InvertedIndex{At{Int64, Nothing, Nothing}}(At(70, nothing, nothing))</code></pre>
+</div>
 </div>
 </div>
 </section>
@@ -468,9 +476,8 @@ They mark that the wrapped object belongs to the dimension:</p>
 
 <p><br>
 <br>
-<br>
 “Standard” dimensions (90% of spatial data):</p>
-<div id="8" class="cell" data-execution_count="1">
+<div id="10" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a aria-hidden="true" tabindex="-1"></a>X, Y, Z, Ti</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>(X, Y, Z, Ti)</code></pre>
@@ -478,7 +485,7 @@ They mark that the wrapped object belongs to the dimension:</p>
 </div>
 <p><br>
 Arbitrary dimensions (everything else)</p>
-<div id="10" class="cell" data-execution_count="1">
+<div id="12" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a aria-hidden="true" tabindex="-1"></a>Dim{<span class="op">:</span>name}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>Dim{:name}</code></pre>
@@ -487,24 +494,25 @@ Arbitrary dimensions (everything else)</p>
 </section></section>
 <section id="lookups" class="title-slide slide level1 center">
 <h1>Lookups</h1>
-<p><code>AbstracArray</code>s that hold another <code>AbstractArray</code> and lookup traits</p>
 <ul>
-<li><code>Sampled</code> and <code>Categorical</code> are the most common</li>
-<li>mostly detected automatically in array constructors</li>
-<li>traits assists both performance and correctness</li>
+<li class="fragment">Hold lookup values along a dimension</li>
+<li class="fragment"><code>AbstracArray</code>s with lookup traits like <code>Points</code> or <code>Intervals</code></li>
+<li class="fragment"><code>Sampled</code> and <code>Categorical</code> are the most common</li>
+<li class="fragment">mostly detected automatically in array constructors</li>
+<li class="fragment">advanced topic - see the docs!</li>
 </ul>
 </section>
 
 <section>
-<section id="array-constructors" class="title-slide slide level1 center">
-<h1>Array Constructors</h1>
+<section id="dimarray-abstractdimarray" class="title-slide slide level1 center">
+<h1>DimArray &lt;: AbstractDimArray</h1>
 
 </section>
 <section id="dimensional" class="slide level2">
 <h2>1 dimensional</h2>
-<p>With a categorical X dimension<br>
+<p><br>
 </p>
-<div id="14" class="cell" data-execution_count="1">
+<div id="16" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> <span class="fu">DimArray</span>([<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>], <span class="fu">X</span>([<span class="op">:</span>a, <span class="op">:</span>b, <span class="op">:</span>c]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>╭─────────────────────────────╮
@@ -520,25 +528,9 @@ Arbitrary dimensions (everything else)</p>
 </section>
 <section id="n-dimensional" class="slide level2">
 <h2>N dimensional</h2>
-<p>With arbitrary <code>Dim</code> dimensions:</p>
-<div id="16" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> <span class="fu">DimArray</span>(<span class="fu">rand</span>(<span class="fl">3</span>, <span class="fl">4</span>), (a<span class="op">=</span>[<span class="op">:</span>a, <span class="op">:</span>b, <span class="op">:</span>c], b<span class="op">=</span><span class="fl">10.0</span><span class="op">:</span><span class="fl">10</span><span class="op">:</span><span class="fl">40.0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="1">
-<pre><code>╭─────────────────────────╮
-│ 3×4 DimArray{Float64,2} │
-├─────────────────────────┴─────────────────────────────────── dims ┐
-  ↓ a Categorical{Symbol} [:a, :b, :c] ForwardOrdered,
-  → b Sampled{Float64} 10.0:10.0:40.0 ForwardOrdered Regular Points
-└───────────────────────────────────────────────────────────────────┘
- ↓ →  10.0       20.0        30.0       40.0
-  :a   0.706735   0.813138    0.606526   0.698258
-  :b   0.275359   0.0802951   0.126824   0.261331
-  :c   0.790357   0.977797    0.223648   0.958858</code></pre>
-</div>
-</div>
-<p>With standard dimensions:</p>
+<p>With standard dimensions in a <code>Tuple</code>:</p>
 <div id="18" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> <span class="fu">DimArray</span>(<span class="fu">rand</span>(<span class="fl">3</span>, <span class="fl">4</span>), (<span class="fu">X</span>([<span class="op">:</span>a, <span class="op">:</span>b, <span class="op">:</span>c]), <span class="fu">Y</span>(<span class="fl">10.0</span><span class="op">:</span><span class="fl">10</span><span class="op">:</span><span class="fl">40.0</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> <span class="fu">DimArray</span>(<span class="fu">rand</span>(<span class="fl">3</span>, <span class="fl">4</span>), (<span class="fu">X</span>([<span class="op">:</span>a, <span class="op">:</span>b, <span class="op">:</span>c]), <span class="fu">Y</span>(<span class="fl">10.0</span><span class="op">:</span><span class="fl">10</span><span class="op">:</span><span class="fl">40.0</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>╭─────────────────────────╮
 │ 3×4 DimArray{Float64,2} │
@@ -546,20 +538,66 @@ Arbitrary dimensions (everything else)</p>
   ↓ X Categorical{Symbol} [:a, :b, :c] ForwardOrdered,
   → Y Sampled{Float64} 10.0:10.0:40.0 ForwardOrdered Regular Points
 └───────────────────────────────────────────────────────────────────┘
- ↓ →  10.0        20.0       30.0       40.0
-  :a   0.0544759   0.805269   0.827125   0.669148
-  :b   0.225088    0.723879   0.893911   0.126772
-  :c   0.287564    0.463862   0.678344   0.303151</code></pre>
+ ↓ →  10.0       20.0        30.0       40.0
+  :a   0.241505   0.0282003   0.462848   0.337448
+  :b   0.370021   0.6171      0.588097   0.499839
+  :c   0.842621   0.509002    0.762115   0.143347</code></pre>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<p>With arbitrary <code>Dim</code> dimensions, in a <code>NamedTuple</code>:</p>
+<div id="20" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a aria-hidden="true" tabindex="-1"></a><span class="fu">DimArray</span>(<span class="fu">rand</span>(<span class="fl">3</span>, <span class="fl">4</span>), (a<span class="op">=</span>[<span class="op">:</span>a, <span class="op">:</span>b, <span class="op">:</span>c], b<span class="op">=</span><span class="fl">10.0</span><span class="op">:</span><span class="fl">10</span><span class="op">:</span><span class="fl">40.0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>╭─────────────────────────╮
+│ 3×4 DimArray{Float64,2} │
+├─────────────────────────┴─────────────────────────────────── dims ┐
+  ↓ a Categorical{Symbol} [:a, :b, :c] ForwardOrdered,
+  → b Sampled{Float64} 10.0:10.0:40.0 ForwardOrdered Regular Points
+└───────────────────────────────────────────────────────────────────┘
+ ↓ →  10.0        20.0        30.0       40.0
+  :a   0.427305    0.633447    0.151995   0.998212
+  :b   0.0411998   0.983792    0.546416   0.0624934
+  :c   0.796127    0.0912018   0.415789   0.990061</code></pre>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<p>Shorthands: <code>rand</code>, <code>fill</code>, <code>zeros</code>, <code>ones</code></p>
+<div id="22" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a aria-hidden="true" tabindex="-1"></a><span class="fu">rand</span>(<span class="fu">X</span>(<span class="fl">6</span>), <span class="fu">Y</span>(<span class="fl">10</span><span class="op">:</span><span class="fl">2</span><span class="op">:</span><span class="fl">20</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>╭─────────────────────────╮
+│ 6×6 DimArray{Float64,2} │
+├─────────────────────────┴────────────────────────── dims ┐
+  ↓ X,
+  → Y Sampled{Int64} 10:2:20 ForwardOrdered Regular Points
+└──────────────────────────────────────────────────────────┘
+ 10          12         14          16         18          20
+  0.0775471   0.981323   0.324893    0.925181   0.229754    0.747415
+  0.847143    0.570464   0.434556    0.78922    0.578236    0.304476
+  0.36445     0.762368   0.120009    0.821311   0.73623     0.814217
+  0.752036    0.513882   0.143335    0.472154   0.400025    0.178112
+  0.129693    0.542092   0.0298521   0.260005   0.247613    0.35124
+  0.0366645   0.891387   0.384627    0.270451   0.0363059   0.310466</code></pre>
 </div>
 </div>
 </section></section>
-<section id="stack-constructor" class="title-slide slide level1 center">
-<h1>Stack Constructor</h1>
-<div id="20" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a aria-hidden="true" tabindex="-1"></a>S <span class="op">=</span> <span class="fu">DimStack</span>(</span>
-<span id="cb17-2"><a aria-hidden="true" tabindex="-1"></a>  (layer1<span class="op">=</span><span class="fu">rand</span>(<span class="dt">Float32</span>, <span class="fl">3</span>, <span class="fl">4</span>), layer2<span class="op">=</span><span class="fu">zeros</span>(<span class="dt">Bool</span>, <span class="fl">3</span>, <span class="fl">4</span>)), </span>
-<span id="cb17-3"><a aria-hidden="true" tabindex="-1"></a>  (<span class="fu">X</span>([<span class="op">:</span>a, <span class="op">:</span>b, <span class="op">:</span>c]), <span class="fu">Ti</span>(<span class="fl">10.0</span><span class="op">:</span><span class="fl">10</span><span class="op">:</span><span class="fl">40.0</span>))</span>
-<span id="cb17-4"><a aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section>
+<section id="dimstack-abstractdimstack" class="title-slide slide level1 center">
+<h1>DimStack &lt;: AbstractDimStack</h1>
+
+</section>
+<section id="layers-with-the-same-dimensions" class="slide level2">
+<h2>Layers with the same dimensions</h2>
+<p><br>
+</p>
+<div id="24" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a aria-hidden="true" tabindex="-1"></a>ds <span class="op">=</span> <span class="fu">X</span>([<span class="op">:</span>a, <span class="op">:</span>b, <span class="op">:</span>c]), <span class="fu">Ti</span>(<span class="fl">10.0</span><span class="op">:</span><span class="fl">10</span><span class="op">:</span><span class="fl">40.0</span>)</span>
+<span id="cb19-2"><a aria-hidden="true" tabindex="-1"></a>S <span class="op">=</span> <span class="fu">DimStack</span>((layer1<span class="op">=</span><span class="fu">rand</span>(<span class="dt">Float32</span>, <span class="fl">3</span>, <span class="fl">4</span>), layer2<span class="op">=</span><span class="fu">zeros</span>(<span class="dt">Bool</span>, <span class="fl">3</span>, <span class="fl">4</span>)), ds)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>╭──────────────╮
 │ 3×4 DimStack │
@@ -573,34 +611,53 @@ Arbitrary dimensions (everything else)</p>
 </div>
 </div>
 </section>
-
+<section id="layers-with-different-dimensions" class="slide level2">
+<h2>Layers with different dimensions:</h2>
+<p><br>
+</p>
+<div id="26" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a aria-hidden="true" tabindex="-1"></a>x, ti <span class="op">=</span> <span class="fu">X</span>([<span class="op">:</span>a, <span class="op">:</span>b, <span class="op">:</span>c]), <span class="fu">Ti</span>(<span class="fl">10.0</span><span class="op">:</span><span class="fl">10</span><span class="op">:</span><span class="fl">40.0</span>)</span>
+<span id="cb21-2"><a aria-hidden="true" tabindex="-1"></a><span class="fu">DimStack</span>((twodims<span class="op">=</span><span class="fu">rand</span>(<span class="dt">Float32</span>, x, ti), onedim<span class="op">=</span><span class="fu">zeros</span>(<span class="dt">Bool</span>, x)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>╭──────────────╮
+│ 3×4 DimStack │
+├──────────────┴─────────────────────────────────────────────── dims ┐
+  ↓ X  Categorical{Symbol} [:a, :b, :c] ForwardOrdered,
+  → Ti Sampled{Float64} 10.0:10.0:40.0 ForwardOrdered Regular Points
+├──────────────────────────────────────────────────────────── layers ┤
+  :twodims eltype: Float32 dims: X, Ti size: 3×4
+  :onedim  eltype: Bool dims: X size: 3
+└────────────────────────────────────────────────────────────────────┘</code></pre>
+</div>
+</div>
+</section></section>
 <section id="named-indexing" class="title-slide slide level1 center">
 <h1>Named indexing</h1>
 <p>DimArray:</p>
-<div id="22" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">BenchmarkTools</span></span>
-<span id="cb19-2"><a aria-hidden="true" tabindex="-1"></a><span class="pp">@btime</span> <span class="op">$</span>A[<span class="fl">3</span>, <span class="fl">4</span>]        <span class="co"># Base Julia syntax</span></span>
-<span id="cb19-3"><a aria-hidden="true" tabindex="-1"></a><span class="pp">@btime</span> <span class="op">$</span>A[<span class="fu">Y</span>(<span class="fl">4</span>), <span class="fu">X</span>(<span class="fl">3</span>)]  <span class="co"># Dimension wrappers</span></span>
-<span id="cb19-4"><a aria-hidden="true" tabindex="-1"></a><span class="pp">@btime</span> <span class="op">$</span>A[Y<span class="op">=</span><span class="fl">4</span>, X<span class="op">=</span><span class="fl">3</span>]    <span class="co"># Keyword syntax</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="28" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">BenchmarkTools</span></span>
+<span id="cb23-2"><a aria-hidden="true" tabindex="-1"></a><span class="pp">@btime</span> <span class="op">$</span>A[<span class="fl">3</span>, <span class="fl">4</span>]        <span class="co"># Base Julia Array syntax</span></span>
+<span id="cb23-3"><a aria-hidden="true" tabindex="-1"></a><span class="pp">@btime</span> <span class="op">$</span>A[<span class="fu">Y</span>(<span class="fl">4</span>), <span class="fu">X</span>(<span class="fl">3</span>)]  <span class="co"># Dimension wrappers</span></span>
+<span id="cb23-4"><a aria-hidden="true" tabindex="-1"></a><span class="pp">@btime</span> <span class="op">$</span>A[Y<span class="op">=</span><span class="fl">4</span>, X<span class="op">=</span><span class="fl">3</span>]    <span class="co"># Keyword syntax</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  2.785 ns (0 allocations: 0 bytes)
-  2.785 ns (0 allocations: 0 bytes)
+<pre><code>  3.095 ns (0 allocations: 0 bytes)
+  3.095 ns (0 allocations: 0 bytes)
   3.095 ns (0 allocations: 0 bytes)</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="1">
-<pre><code>0.30315137721275576</code></pre>
+<pre><code>0.14334711233192854</code></pre>
 </div>
 </div>
 <p>DimStack:</p>
-<div id="24" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a aria-hidden="true" tabindex="-1"></a><span class="pp">@btime</span> <span class="op">$</span>S[<span class="fu">Ti</span>(<span class="fl">4</span>), <span class="fu">X</span>(<span class="fl">3</span>)] <span class="co"># Dimension wrappers</span></span>
-<span id="cb22-2"><a aria-hidden="true" tabindex="-1"></a><span class="pp">@btime</span> <span class="op">$</span>S[Ti<span class="op">=</span><span class="fl">4</span>, X<span class="op">=</span><span class="fl">3</span>]   <span class="co"># Keyword syntax</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="30" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a aria-hidden="true" tabindex="-1"></a><span class="pp">@btime</span> <span class="op">$</span>S[<span class="fu">Ti</span>(<span class="fl">4</span>), <span class="fu">X</span>(<span class="fl">3</span>)] <span class="co"># Dimension wrappers</span></span>
+<span id="cb26-2"><a aria-hidden="true" tabindex="-1"></a><span class="pp">@btime</span> <span class="op">$</span>S[Ti<span class="op">=</span><span class="fl">4</span>, X<span class="op">=</span><span class="fl">3</span>]   <span class="co"># Keyword syntax</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  3.176 ns (0 allocations: 0 bytes)
-  3.406 ns (0 allocations: 0 bytes)</code></pre>
+<pre><code>  3.406 ns (0 allocations: 0 bytes)
+  3.706 ns (0 allocations: 0 bytes)</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="1">
-<pre><code>(layer1 = 0.32965177f0, layer2 = false)</code></pre>
+<pre><code>(layer1 = 0.15278113f0, layer2 = false)</code></pre>
 </div>
 </div>
 </section>
@@ -608,22 +665,24 @@ Arbitrary dimensions (everything else)</p>
 <section>
 <section id="selectors" class="title-slide slide level1 center">
 <h1>Selectors</h1>
-
+<ul>
+<li class="fragment">select data with lookup values</li>
+</ul>
 </section>
 <section id="at" class="slide level2">
 <h2>At</h2>
 <p><br>
 Find exact or approximate matches<br>
 </p>
-<div id="26" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> <span class="fu">DimArray</span>([<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>], (<span class="fu">X</span>([<span class="fl">10.0</span>, <span class="fl">20.0</span>, <span class="fl">40.0</span>, <span class="fl">80.0</span>])))</span>
-<span id="cb25-2"><a aria-hidden="true" tabindex="-1"></a>A[<span class="fu">X</span>(<span class="fu">At</span>(<span class="fl">80.0</span>))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="32" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> <span class="fu">DimArray</span>([<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>], (<span class="fu">X</span>([<span class="fl">10.0</span>, <span class="fl">20.0</span>, <span class="fl">40.0</span>, <span class="fl">80.0</span>])))</span>
+<span id="cb29-2"><a aria-hidden="true" tabindex="-1"></a>A[<span class="fu">X</span>(<span class="fu">At</span>(<span class="fl">80.0</span>))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>4</code></pre>
 </div>
 </div>
-<div id="28" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a aria-hidden="true" tabindex="-1"></a>A[<span class="fu">X</span>(<span class="fu">At</span>(<span class="fl">80.09</span>; atol<span class="op">=</span><span class="fl">0.1</span>))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="34" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a aria-hidden="true" tabindex="-1"></a>A[<span class="fu">X</span>(<span class="fu">At</span>(<span class="fl">80.09</span>; atol<span class="op">=</span><span class="fl">0.1</span>))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>4</code></pre>
 </div>
@@ -634,8 +693,8 @@ Find exact or approximate matches<br>
 <p><br>
 Find the closest match<br>
 </p>
-<div id="30" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a aria-hidden="true" tabindex="-1"></a>A[<span class="fu">X</span>(<span class="fu">Near</span>(<span class="fl">85</span>))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="36" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a aria-hidden="true" tabindex="-1"></a>A[<span class="fu">X</span>(<span class="fu">Near</span>(<span class="fl">85</span>))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>4</code></pre>
 </div>
@@ -646,12 +705,12 @@ Find the closest match<br>
 <p><br>
 Find the interval that contains a value<br>
 </p>
-<div id="32" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a aria-hidden="true" tabindex="-1"></a><span class="co"># Define a DimArray with Intervals lookup</span></span>
-<span id="cb31-2"><a aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DimensionalData.Lookups</span></span>
-<span id="cb31-3"><a aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> <span class="fu">DimArray</span>(<span class="fl">100</span><span class="op">:</span><span class="fl">100</span><span class="op">:</span><span class="fl">9900</span>, <span class="fu">X</span>(<span class="fl">1.0</span><span class="op">:</span><span class="fl">1.0</span><span class="op">:</span><span class="fl">99.0</span>; sampling<span class="op">=</span><span class="fu">Intervals</span>(<span class="fu">Start</span>())))</span>
-<span id="cb31-4"><a aria-hidden="true" tabindex="-1"></a><span class="co"># Index with Contains</span></span>
-<span id="cb31-5"><a aria-hidden="true" tabindex="-1"></a>A[<span class="fu">X</span>(<span class="fu">Contains</span>(<span class="fl">9.5</span>))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="38" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb35-1"><a aria-hidden="true" tabindex="-1"></a><span class="co"># Define a DimArray with Intervals lookup</span></span>
+<span id="cb35-2"><a aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DimensionalData.Lookups</span></span>
+<span id="cb35-3"><a aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> <span class="fu">DimArray</span>(<span class="fl">100</span><span class="op">:</span><span class="fl">100</span><span class="op">:</span><span class="fl">9900</span>, <span class="fu">X</span>(<span class="fl">1.0</span><span class="op">:</span><span class="fl">1.0</span><span class="op">:</span><span class="fl">99.0</span>; sampling<span class="op">=</span><span class="fu">Intervals</span>(<span class="fu">Start</span>())))</span>
+<span id="cb35-4"><a aria-hidden="true" tabindex="-1"></a><span class="co"># Index with Contains</span></span>
+<span id="cb35-5"><a aria-hidden="true" tabindex="-1"></a>A[<span class="fu">X</span>(<span class="fu">Contains</span>(<span class="fl">9.5</span>))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>900</code></pre>
 </div>
@@ -662,8 +721,8 @@ Find the interval that contains a value<br>
 <p><br>
 Select data inside an interval<br>
 </p>
-<div id="34" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a aria-hidden="true" tabindex="-1"></a>A[X<span class="op">=</span><span class="fl">9.5</span> <span class="op">..</span> <span class="fl">15</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="40" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb37-1"><a aria-hidden="true" tabindex="-1"></a>A[X<span class="op">=</span><span class="fl">9.5</span> <span class="op">..</span> <span class="fl">15</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>╭─────────────────────────────╮
 │ 5-element DimArray{Int64,1} │
@@ -683,8 +742,8 @@ Select data inside an interval<br>
 <p><br>
 Make dimensional queries<br>
 </p>
-<div id="36" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb35-1"><a aria-hidden="true" tabindex="-1"></a>A[X<span class="op">=</span><span class="fu">Where</span>(isodd)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="42" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb39-1"><a aria-hidden="true" tabindex="-1"></a>A[X<span class="op">=</span><span class="fu">Where</span>(isodd)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>╭──────────────────────────────╮
 │ 50-element DimArray{Int64,1} │
@@ -713,79 +772,91 @@ Make dimensional queries<br>
 </section>
 <section id="plots.jl" class="slide level2">
 <h2>Plots.jl</h2>
-<div id="38" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb37-1"><a aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span></span>
-<span id="cb37-2"><a aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">scatter</span>(<span class="fu">rand</span>(<span class="fu">X</span>([<span class="op">:</span>a, <span class="op">:</span>b, <span class="op">:</span>c, <span class="op">:</span>d])))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="44" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb41-1"><a aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span></span>
+<span id="cb41-2"><a aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">scatter</span>(<span class="fu">rand</span>(<span class="fu">X</span>([<span class="op">:</span>a, <span class="op">:</span>b, <span class="op">:</span>c, <span class="op">:</span>d])))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <!--?xml version="1.0" encoding="utf-8"?-->
 <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="960" height="480" viewbox="0 0 3840 1920">
 <defs>
-  <clippath id="clip020">
+  <clippath id="clip110">
     <rect x="0" y="0" width="3840" height="1920"></rect>
   </clippath>
 </defs>
-<path clip-path="url(#clip020)" d="M0 1920 L3840 1920 L3840 0 L0 0  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
+<path clip-path="url(#clip110)" d="M0 1920 L3840 1920 L3840 0 L0 0  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
 <defs>
-  <clippath id="clip021">
+  <clippath id="clip111">
     <rect x="768" y="0" width="2689" height="1920"></rect>
   </clippath>
 </defs>
-<path clip-path="url(#clip020)" d="M170.998 1760.5 L3792.76 1760.5 L3792.76 47.2441 L170.998 47.2441  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
+<path clip-path="url(#clip110)" d="M170.998 1760.5 L3792.76 1760.5 L3792.76 47.2441 L170.998 47.2441  Z" fill="#ffffff" fill-rule="evenodd" fill-opacity="1"></path>
 <defs>
-  <clippath id="clip022">
+  <clippath id="clip112">
     <rect x="170" y="47" width="3623" height="1714"></rect>
   </clippath>
 </defs>
-<polyline clip-path="url(#clip022)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="273.501,1760.5 273.501,47.2441 "></polyline>
-<polyline clip-path="url(#clip022)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="1412.42,1760.5 1412.42,47.2441 "></polyline>
-<polyline clip-path="url(#clip022)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="2551.34,1760.5 2551.34,47.2441 "></polyline>
-<polyline clip-path="url(#clip022)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="3690.25,1760.5 3690.25,47.2441 "></polyline>
-<polyline clip-path="url(#clip020)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="170.998,1760.5 3792.76,1760.5 "></polyline>
-<polyline clip-path="url(#clip020)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="273.501,1760.5 273.501,1741.6 "></polyline>
-<polyline clip-path="url(#clip020)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="1412.42,1760.5 1412.42,1741.6 "></polyline>
-<polyline clip-path="url(#clip020)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="2551.34,1760.5 2551.34,1741.6 "></polyline>
-<polyline clip-path="url(#clip020)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="3690.25,1760.5 3690.25,1741.6 "></polyline>
-<path clip-path="url(#clip020)" d="M275.955 1821.39 Q270.792 1821.39 268.802 1822.57 Q266.811 1823.75 266.811 1826.6 Q266.811 1828.86 268.293 1830.21 Q269.797 1831.53 272.367 1831.53 Q275.908 1831.53 278.038 1829.03 Q280.191 1826.5 280.191 1822.34 L280.191 1821.39 L275.955 1821.39 M284.45 1819.63 L284.45 1834.42 L280.191 1834.42 L280.191 1830.48 Q278.732 1832.85 276.556 1833.98 Q274.38 1835.09 271.232 1835.09 Q267.251 1835.09 264.89 1832.87 Q262.552 1830.62 262.552 1826.87 Q262.552 1822.5 265.468 1820.28 Q268.408 1818.05 274.218 1818.05 L280.191 1818.05 L280.191 1817.64 Q280.191 1814.7 278.246 1813.1 Q276.325 1811.48 272.83 1811.48 Q270.607 1811.48 268.501 1812.01 Q266.394 1812.54 264.45 1813.61 L264.45 1809.67 Q266.788 1808.77 268.987 1808.33 Q271.186 1807.87 273.269 1807.87 Q278.894 1807.87 281.672 1810.79 Q284.45 1813.7 284.45 1819.63 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip020)" d="M1419.59 1821.48 Q1419.59 1816.78 1417.65 1814.12 Q1415.73 1811.43 1412.35 1811.43 Q1408.97 1811.43 1407.02 1814.12 Q1405.1 1816.78 1405.1 1821.48 Q1405.1 1826.18 1407.02 1828.86 Q1408.97 1831.53 1412.35 1831.53 Q1415.73 1831.53 1417.65 1828.86 Q1419.59 1826.18 1419.59 1821.48 M1405.1 1812.43 Q1406.45 1810.11 1408.48 1809 Q1410.54 1807.87 1413.39 1807.87 Q1418.11 1807.87 1421.05 1811.62 Q1424.02 1815.37 1424.02 1821.48 Q1424.02 1827.59 1421.05 1831.34 Q1418.11 1835.09 1413.39 1835.09 Q1410.54 1835.09 1408.48 1833.98 Q1406.45 1832.85 1405.1 1830.53 L1405.1 1834.42 L1400.82 1834.42 L1400.82 1798.4 L1405.1 1798.4 L1405.1 1812.43 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip020)" d="M2561.59 1809.49 L2561.59 1813.47 Q2559.78 1812.48 2557.96 1811.99 Q2556.15 1811.48 2554.3 1811.48 Q2550.16 1811.48 2547.86 1814.12 Q2545.57 1816.73 2545.57 1821.48 Q2545.57 1826.23 2547.86 1828.86 Q2550.16 1831.48 2554.3 1831.48 Q2556.15 1831.48 2557.96 1830.99 Q2559.78 1830.48 2561.59 1829.49 L2561.59 1833.42 Q2559.81 1834.26 2557.89 1834.67 Q2555.99 1835.09 2553.84 1835.09 Q2547.98 1835.09 2544.53 1831.41 Q2541.08 1827.73 2541.08 1821.48 Q2541.08 1815.14 2544.55 1811.5 Q2548.05 1807.87 2554.11 1807.87 Q2556.08 1807.87 2557.96 1808.29 Q2559.83 1808.68 2561.59 1809.49 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip020)" d="M3697.58 1812.43 L3697.58 1798.4 L3701.84 1798.4 L3701.84 1834.42 L3697.58 1834.42 L3697.58 1830.53 Q3696.24 1832.85 3694.18 1833.98 Q3692.14 1835.09 3689.27 1835.09 Q3684.57 1835.09 3681.61 1831.34 Q3678.67 1827.59 3678.67 1821.48 Q3678.67 1815.37 3681.61 1811.62 Q3684.57 1807.87 3689.27 1807.87 Q3692.14 1807.87 3694.18 1809 Q3696.24 1810.11 3697.58 1812.43 M3683.07 1821.48 Q3683.07 1826.18 3684.99 1828.86 Q3686.93 1831.53 3690.31 1831.53 Q3693.69 1831.53 3695.64 1828.86 Q3697.58 1826.18 3697.58 1821.48 Q3697.58 1816.78 3695.64 1814.12 Q3693.69 1811.43 3690.31 1811.43 Q3686.93 1811.43 3684.99 1814.12 Q3683.07 1816.78 3683.07 1821.48 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip020)" d="M1963.7 1879.44 L1970.61 1879.44 L1982.42 1897.11 L1994.29 1879.44 L2001.2 1879.44 L1985.92 1902.26 L2002.22 1926.96 L1995.31 1926.96 L1981.94 1906.75 L1968.48 1926.96 L1961.54 1926.96 L1978.5 1901.6 L1963.7 1879.44 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><polyline clip-path="url(#clip022)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="170.998,1552.23 3792.76,1552.23 "></polyline>
-<polyline clip-path="url(#clip022)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="170.998,1170.97 3792.76,1170.97 "></polyline>
-<polyline clip-path="url(#clip022)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="170.998,789.717 3792.76,789.717 "></polyline>
-<polyline clip-path="url(#clip022)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="170.998,408.462 3792.76,408.462 "></polyline>
-<polyline clip-path="url(#clip020)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="170.998,1760.5 170.998,47.2441 "></polyline>
-<polyline clip-path="url(#clip020)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="170.998,1552.23 189.896,1552.23 "></polyline>
-<polyline clip-path="url(#clip020)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="170.998,1170.97 189.896,1170.97 "></polyline>
-<polyline clip-path="url(#clip020)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="170.998,789.717 189.896,789.717 "></polyline>
-<polyline clip-path="url(#clip020)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="170.998,408.462 189.896,408.462 "></polyline>
-<path clip-path="url(#clip020)" d="M57.8198 1538.03 Q54.2087 1538.03 52.38 1541.59 Q50.5745 1545.13 50.5745 1552.26 Q50.5745 1559.37 52.38 1562.93 Q54.2087 1566.47 57.8198 1566.47 Q61.4541 1566.47 63.2596 1562.93 Q65.0883 1559.37 65.0883 1552.26 Q65.0883 1545.13 63.2596 1541.59 Q61.4541 1538.03 57.8198 1538.03 M57.8198 1534.32 Q63.63 1534.32 66.6855 1538.93 Q69.7642 1543.51 69.7642 1552.26 Q69.7642 1560.99 66.6855 1565.59 Q63.63 1570.18 57.8198 1570.18 Q52.0097 1570.18 48.931 1565.59 Q45.8754 1560.99 45.8754 1552.26 Q45.8754 1543.51 48.931 1538.93 Q52.0097 1534.32 57.8198 1534.32 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip020)" d="M77.9818 1563.63 L82.866 1563.63 L82.866 1569.51 L77.9818 1569.51 L77.9818 1563.63 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip020)" d="M97.0789 1565.57 L113.398 1565.57 L113.398 1569.51 L91.4539 1569.51 L91.4539 1565.57 Q94.1159 1562.82 98.6992 1558.19 Q103.306 1553.53 104.486 1552.19 Q106.732 1549.67 107.611 1547.93 Q108.514 1546.17 108.514 1544.48 Q108.514 1541.73 106.57 1539.99 Q104.648 1538.26 101.546 1538.26 Q99.3474 1538.26 96.8937 1539.02 Q94.4632 1539.78 91.6854 1541.34 L91.6854 1536.61 Q94.5094 1535.48 96.9631 1534.9 Q99.4168 1534.32 101.454 1534.32 Q106.824 1534.32 110.019 1537.01 Q113.213 1539.69 113.213 1544.18 Q113.213 1546.31 112.403 1548.23 Q111.616 1550.13 109.509 1552.72 Q108.931 1553.4 105.829 1556.61 Q102.727 1559.81 97.0789 1565.57 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip020)" d="M55.7365 1156.77 Q52.1254 1156.77 50.2967 1160.34 Q48.4912 1163.88 48.4912 1171.01 Q48.4912 1178.11 50.2967 1181.68 Q52.1254 1185.22 55.7365 1185.22 Q59.3707 1185.22 61.1763 1181.68 Q63.005 1178.11 63.005 1171.01 Q63.005 1163.88 61.1763 1160.34 Q59.3707 1156.77 55.7365 1156.77 M55.7365 1153.07 Q61.5467 1153.07 64.6022 1157.67 Q67.6809 1162.26 67.6809 1171.01 Q67.6809 1179.73 64.6022 1184.34 Q61.5467 1188.92 55.7365 1188.92 Q49.9264 1188.92 46.8477 1184.34 Q43.7921 1179.73 43.7921 1171.01 Q43.7921 1162.26 46.8477 1157.67 Q49.9264 1153.07 55.7365 1153.07 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip020)" d="M75.8984 1182.37 L80.7827 1182.37 L80.7827 1188.25 L75.8984 1188.25 L75.8984 1182.37 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip020)" d="M103.815 1157.77 L92.0095 1176.21 L103.815 1176.21 L103.815 1157.77 M102.588 1153.69 L108.468 1153.69 L108.468 1176.21 L113.398 1176.21 L113.398 1180.1 L108.468 1180.1 L108.468 1188.25 L103.815 1188.25 L103.815 1180.1 L88.2132 1180.1 L88.2132 1175.59 L102.588 1153.69 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip020)" d="M56.0606 775.516 Q52.4495 775.516 50.6208 779.08 Q48.8152 782.622 48.8152 789.752 Q48.8152 796.858 50.6208 800.423 Q52.4495 803.964 56.0606 803.964 Q59.6948 803.964 61.5004 800.423 Q63.3291 796.858 63.3291 789.752 Q63.3291 782.622 61.5004 779.08 Q59.6948 775.516 56.0606 775.516 M56.0606 771.812 Q61.8707 771.812 64.9263 776.418 Q68.005 781.002 68.005 789.752 Q68.005 798.478 64.9263 803.085 Q61.8707 807.668 56.0606 807.668 Q50.2504 807.668 47.1717 803.085 Q44.1162 798.478 44.1162 789.752 Q44.1162 781.002 47.1717 776.418 Q50.2504 771.812 56.0606 771.812 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip020)" d="M76.2225 801.117 L81.1067 801.117 L81.1067 806.997 L76.2225 806.997 L76.2225 801.117 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip020)" d="M101.871 787.853 Q98.7224 787.853 96.8705 790.006 Q95.0419 792.159 95.0419 795.909 Q95.0419 799.636 96.8705 801.812 Q98.7224 803.964 101.871 803.964 Q105.019 803.964 106.847 801.812 Q108.699 799.636 108.699 795.909 Q108.699 792.159 106.847 790.006 Q105.019 787.853 101.871 787.853 M111.153 773.201 L111.153 777.46 Q109.394 776.627 107.588 776.187 Q105.806 775.747 104.046 775.747 Q99.4168 775.747 96.9631 778.872 Q94.5326 781.997 94.1854 788.316 Q95.5511 786.303 97.6113 785.238 Q99.6715 784.15 102.148 784.15 Q107.357 784.15 110.366 787.321 Q113.398 790.469 113.398 795.909 Q113.398 801.233 110.25 804.451 Q107.102 807.668 101.871 807.668 Q95.8752 807.668 92.7039 803.085 Q89.5326 798.478 89.5326 789.752 Q89.5326 781.557 93.4215 776.696 Q97.3104 771.812 103.861 771.812 Q105.62 771.812 107.403 772.159 Q109.208 772.506 111.153 773.201 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip020)" d="M56.3152 394.261 Q52.7041 394.261 50.8754 397.825 Q49.0699 401.367 49.0699 408.497 Q49.0699 415.603 50.8754 419.168 Q52.7041 422.71 56.3152 422.71 Q59.9494 422.71 61.755 419.168 Q63.5837 415.603 63.5837 408.497 Q63.5837 401.367 61.755 397.825 Q59.9494 394.261 56.3152 394.261 M56.3152 390.557 Q62.1254 390.557 65.1809 395.163 Q68.2596 399.747 68.2596 408.497 Q68.2596 417.223 65.1809 421.83 Q62.1254 426.413 56.3152 426.413 Q50.5051 426.413 47.4264 421.83 Q44.3708 417.223 44.3708 408.497 Q44.3708 399.747 47.4264 395.163 Q50.5051 390.557 56.3152 390.557 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip020)" d="M76.4771 419.862 L81.3614 419.862 L81.3614 425.742 L76.4771 425.742 L76.4771 419.862 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip020)" d="M101.546 409.33 Q98.2131 409.33 96.2918 411.112 Q94.3937 412.895 94.3937 416.02 Q94.3937 419.145 96.2918 420.927 Q98.2131 422.71 101.546 422.71 Q104.88 422.71 106.801 420.927 Q108.722 419.122 108.722 416.02 Q108.722 412.895 106.801 411.112 Q104.903 409.33 101.546 409.33 M96.8705 407.339 Q93.8613 406.598 92.1715 404.538 Q90.5048 402.478 90.5048 399.515 Q90.5048 395.372 93.4446 392.964 Q96.4076 390.557 101.546 390.557 Q106.708 390.557 109.648 392.964 Q112.588 395.372 112.588 399.515 Q112.588 402.478 110.898 404.538 Q109.232 406.598 106.245 407.339 Q109.625 408.126 111.5 410.418 Q113.398 412.71 113.398 416.02 Q113.398 421.043 110.32 423.728 Q107.264 426.413 101.546 426.413 Q95.8289 426.413 92.7502 423.728 Q89.6947 421.043 89.6947 416.02 Q89.6947 412.71 91.5928 410.418 Q93.4909 408.126 96.8705 407.339 M95.1576 399.955 Q95.1576 402.64 96.8242 404.145 Q98.5141 405.649 101.546 405.649 Q104.556 405.649 106.245 404.145 Q107.958 402.64 107.958 399.955 Q107.958 397.27 106.245 395.765 Q104.556 394.261 101.546 394.261 Q98.5141 394.261 96.8242 395.765 Q95.1576 397.27 95.1576 399.955 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><circle clip-path="url(#clip022)" cx="273.501" cy="95.7325" r="14.4" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.84"></circle>
-<circle clip-path="url(#clip022)" cx="1412.42" cy="1712.01" r="14.4" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.84"></circle>
-<circle clip-path="url(#clip022)" cx="2551.34" cy="751.864" r="14.4" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.84"></circle>
-<circle clip-path="url(#clip022)" cx="3690.25" cy="369.876" r="14.4" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.84"></circle>
+<polyline clip-path="url(#clip112)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="273.501,1760.5 273.501,47.2441 "></polyline>
+<polyline clip-path="url(#clip112)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="1412.42,1760.5 1412.42,47.2441 "></polyline>
+<polyline clip-path="url(#clip112)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="2551.34,1760.5 2551.34,47.2441 "></polyline>
+<polyline clip-path="url(#clip112)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="3690.25,1760.5 3690.25,47.2441 "></polyline>
+<polyline clip-path="url(#clip110)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="170.998,1760.5 3792.76,1760.5 "></polyline>
+<polyline clip-path="url(#clip110)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="273.501,1760.5 273.501,1741.6 "></polyline>
+<polyline clip-path="url(#clip110)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="1412.42,1760.5 1412.42,1741.6 "></polyline>
+<polyline clip-path="url(#clip110)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="2551.34,1760.5 2551.34,1741.6 "></polyline>
+<polyline clip-path="url(#clip110)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="3690.25,1760.5 3690.25,1741.6 "></polyline>
+<path clip-path="url(#clip110)" d="M275.955 1821.39 Q270.792 1821.39 268.802 1822.57 Q266.811 1823.75 266.811 1826.6 Q266.811 1828.86 268.293 1830.21 Q269.797 1831.53 272.367 1831.53 Q275.908 1831.53 278.038 1829.03 Q280.191 1826.5 280.191 1822.34 L280.191 1821.39 L275.955 1821.39 M284.45 1819.63 L284.45 1834.42 L280.191 1834.42 L280.191 1830.48 Q278.732 1832.85 276.556 1833.98 Q274.38 1835.09 271.232 1835.09 Q267.251 1835.09 264.89 1832.87 Q262.552 1830.62 262.552 1826.87 Q262.552 1822.5 265.468 1820.28 Q268.408 1818.05 274.218 1818.05 L280.191 1818.05 L280.191 1817.64 Q280.191 1814.7 278.246 1813.1 Q276.325 1811.48 272.83 1811.48 Q270.607 1811.48 268.501 1812.01 Q266.394 1812.54 264.45 1813.61 L264.45 1809.67 Q266.788 1808.77 268.987 1808.33 Q271.186 1807.87 273.269 1807.87 Q278.894 1807.87 281.672 1810.79 Q284.45 1813.7 284.45 1819.63 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip110)" d="M1419.59 1821.48 Q1419.59 1816.78 1417.65 1814.12 Q1415.73 1811.43 1412.35 1811.43 Q1408.97 1811.43 1407.02 1814.12 Q1405.1 1816.78 1405.1 1821.48 Q1405.1 1826.18 1407.02 1828.86 Q1408.97 1831.53 1412.35 1831.53 Q1415.73 1831.53 1417.65 1828.86 Q1419.59 1826.18 1419.59 1821.48 M1405.1 1812.43 Q1406.45 1810.11 1408.48 1809 Q1410.54 1807.87 1413.39 1807.87 Q1418.11 1807.87 1421.05 1811.62 Q1424.02 1815.37 1424.02 1821.48 Q1424.02 1827.59 1421.05 1831.34 Q1418.11 1835.09 1413.39 1835.09 Q1410.54 1835.09 1408.48 1833.98 Q1406.45 1832.85 1405.1 1830.53 L1405.1 1834.42 L1400.82 1834.42 L1400.82 1798.4 L1405.1 1798.4 L1405.1 1812.43 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip110)" d="M2561.59 1809.49 L2561.59 1813.47 Q2559.78 1812.48 2557.96 1811.99 Q2556.15 1811.48 2554.3 1811.48 Q2550.16 1811.48 2547.86 1814.12 Q2545.57 1816.73 2545.57 1821.48 Q2545.57 1826.23 2547.86 1828.86 Q2550.16 1831.48 2554.3 1831.48 Q2556.15 1831.48 2557.96 1830.99 Q2559.78 1830.48 2561.59 1829.49 L2561.59 1833.42 Q2559.81 1834.26 2557.89 1834.67 Q2555.99 1835.09 2553.84 1835.09 Q2547.98 1835.09 2544.53 1831.41 Q2541.08 1827.73 2541.08 1821.48 Q2541.08 1815.14 2544.55 1811.5 Q2548.05 1807.87 2554.11 1807.87 Q2556.08 1807.87 2557.96 1808.29 Q2559.83 1808.68 2561.59 1809.49 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip110)" d="M3697.58 1812.43 L3697.58 1798.4 L3701.84 1798.4 L3701.84 1834.42 L3697.58 1834.42 L3697.58 1830.53 Q3696.24 1832.85 3694.18 1833.98 Q3692.14 1835.09 3689.27 1835.09 Q3684.57 1835.09 3681.61 1831.34 Q3678.67 1827.59 3678.67 1821.48 Q3678.67 1815.37 3681.61 1811.62 Q3684.57 1807.87 3689.27 1807.87 Q3692.14 1807.87 3694.18 1809 Q3696.24 1810.11 3697.58 1812.43 M3683.07 1821.48 Q3683.07 1826.18 3684.99 1828.86 Q3686.93 1831.53 3690.31 1831.53 Q3693.69 1831.53 3695.64 1828.86 Q3697.58 1826.18 3697.58 1821.48 Q3697.58 1816.78 3695.64 1814.12 Q3693.69 1811.43 3690.31 1811.43 Q3686.93 1811.43 3684.99 1814.12 Q3683.07 1816.78 3683.07 1821.48 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip110)" d="M1963.7 1879.44 L1970.61 1879.44 L1982.42 1897.11 L1994.29 1879.44 L2001.2 1879.44 L1985.92 1902.26 L2002.22 1926.96 L1995.31 1926.96 L1981.94 1906.75 L1968.48 1926.96 L1961.54 1926.96 L1978.5 1901.6 L1963.7 1879.44 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><polyline clip-path="url(#clip112)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="170.998,1725.72 3792.76,1725.72 "></polyline>
+<polyline clip-path="url(#clip112)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="170.998,1354.15 3792.76,1354.15 "></polyline>
+<polyline clip-path="url(#clip112)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="170.998,982.586 3792.76,982.586 "></polyline>
+<polyline clip-path="url(#clip112)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="170.998,611.02 3792.76,611.02 "></polyline>
+<polyline clip-path="url(#clip112)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:2; stroke-opacity:0.1; fill:none" points="170.998,239.453 3792.76,239.453 "></polyline>
+<polyline clip-path="url(#clip110)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="170.998,1760.5 170.998,47.2441 "></polyline>
+<polyline clip-path="url(#clip110)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="170.998,1725.72 189.896,1725.72 "></polyline>
+<polyline clip-path="url(#clip110)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="170.998,1354.15 189.896,1354.15 "></polyline>
+<polyline clip-path="url(#clip110)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="170.998,982.586 189.896,982.586 "></polyline>
+<polyline clip-path="url(#clip110)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="170.998,611.02 189.896,611.02 "></polyline>
+<polyline clip-path="url(#clip110)" style="stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="170.998,239.453 189.896,239.453 "></polyline>
+<path clip-path="url(#clip110)" d="M57.4495 1711.52 Q53.8384 1711.52 52.0097 1715.08 Q50.2041 1718.63 50.2041 1725.75 Q50.2041 1732.86 52.0097 1736.43 Q53.8384 1739.97 57.4495 1739.97 Q61.0837 1739.97 62.8892 1736.43 Q64.7179 1732.86 64.7179 1725.75 Q64.7179 1718.63 62.8892 1715.08 Q61.0837 1711.52 57.4495 1711.52 M57.4495 1707.81 Q63.2596 1707.81 66.3152 1712.42 Q69.3938 1717 69.3938 1725.75 Q69.3938 1734.48 66.3152 1739.09 Q63.2596 1743.67 57.4495 1743.67 Q51.6393 1743.67 48.5606 1739.09 Q45.5051 1734.48 45.5051 1725.75 Q45.5051 1717 48.5606 1712.42 Q51.6393 1707.81 57.4495 1707.81 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip110)" d="M77.6114 1737.12 L82.4956 1737.12 L82.4956 1743 L77.6114 1743 L77.6114 1737.12 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip110)" d="M93.4909 1739.06 L101.13 1739.06 L101.13 1712.7 L92.8196 1714.37 L92.8196 1710.11 L101.083 1708.44 L105.759 1708.44 L105.759 1739.06 L113.398 1739.06 L113.398 1743 L93.4909 1743 L93.4909 1739.06 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip110)" d="M57.8198 1339.95 Q54.2087 1339.95 52.38 1343.52 Q50.5745 1347.06 50.5745 1354.19 Q50.5745 1361.29 52.38 1364.86 Q54.2087 1368.4 57.8198 1368.4 Q61.4541 1368.4 63.2596 1364.86 Q65.0883 1361.29 65.0883 1354.19 Q65.0883 1347.06 63.2596 1343.52 Q61.4541 1339.95 57.8198 1339.95 M57.8198 1336.25 Q63.63 1336.25 66.6855 1340.85 Q69.7642 1345.44 69.7642 1354.19 Q69.7642 1362.91 66.6855 1367.52 Q63.63 1372.1 57.8198 1372.1 Q52.0097 1372.1 48.931 1367.52 Q45.8754 1362.91 45.8754 1354.19 Q45.8754 1345.44 48.931 1340.85 Q52.0097 1336.25 57.8198 1336.25 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip110)" d="M77.9818 1365.55 L82.866 1365.55 L82.866 1371.43 L77.9818 1371.43 L77.9818 1365.55 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip110)" d="M97.0789 1367.5 L113.398 1367.5 L113.398 1371.43 L91.4539 1371.43 L91.4539 1367.5 Q94.1159 1364.74 98.6992 1360.11 Q103.306 1355.46 104.486 1354.12 Q106.732 1351.6 107.611 1349.86 Q108.514 1348.1 108.514 1346.41 Q108.514 1343.66 106.57 1341.92 Q104.648 1340.18 101.546 1340.18 Q99.3474 1340.18 96.8937 1340.95 Q94.4632 1341.71 91.6854 1343.26 L91.6854 1338.54 Q94.5094 1337.41 96.9631 1336.83 Q99.4168 1336.25 101.454 1336.25 Q106.824 1336.25 110.019 1338.93 Q113.213 1341.62 113.213 1346.11 Q113.213 1348.24 112.403 1350.16 Q111.616 1352.06 109.509 1354.65 Q108.931 1355.32 105.829 1358.54 Q102.727 1361.73 97.0789 1367.5 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip110)" d="M56.8708 968.385 Q53.2597 968.385 51.431 971.95 Q49.6254 975.492 49.6254 982.621 Q49.6254 989.728 51.431 993.292 Q53.2597 996.834 56.8708 996.834 Q60.505 996.834 62.3105 993.292 Q64.1392 989.728 64.1392 982.621 Q64.1392 975.492 62.3105 971.95 Q60.505 968.385 56.8708 968.385 M56.8708 964.681 Q62.6809 964.681 65.7365 969.288 Q68.8151 973.871 68.8151 982.621 Q68.8151 991.348 65.7365 995.954 Q62.6809 1000.54 56.8708 1000.54 Q51.0606 1000.54 47.9819 995.954 Q44.9264 991.348 44.9264 982.621 Q44.9264 973.871 47.9819 969.288 Q51.0606 964.681 56.8708 964.681 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip110)" d="M77.0327 993.987 L81.9169 993.987 L81.9169 999.866 L77.0327 999.866 L77.0327 993.987 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip110)" d="M106.269 981.232 Q109.625 981.95 111.5 984.218 Q113.398 986.487 113.398 989.82 Q113.398 994.936 109.88 997.737 Q106.361 1000.54 99.8798 1000.54 Q97.7039 1000.54 95.3891 1000.1 Q93.0974 999.681 90.6437 998.825 L90.6437 994.311 Q92.5882 995.445 94.903 996.024 Q97.2178 996.603 99.7409 996.603 Q104.139 996.603 106.431 994.866 Q108.745 993.13 108.745 989.82 Q108.745 986.765 106.593 985.052 Q104.463 983.316 100.644 983.316 L96.6159 983.316 L96.6159 979.473 L100.829 979.473 Q104.278 979.473 106.107 978.107 Q107.935 976.718 107.935 974.126 Q107.935 971.464 106.037 970.052 Q104.162 968.617 100.644 968.617 Q98.7224 968.617 96.5233 969.033 Q94.3243 969.45 91.6854 970.33 L91.6854 966.163 Q94.3474 965.422 96.6622 965.052 Q99.0002 964.681 101.06 964.681 Q106.384 964.681 109.486 967.112 Q112.588 969.519 112.588 973.64 Q112.588 976.51 110.945 978.501 Q109.301 980.468 106.269 981.232 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip110)" d="M55.7365 596.818 Q52.1254 596.818 50.2967 600.383 Q48.4912 603.925 48.4912 611.054 Q48.4912 618.161 50.2967 621.726 Q52.1254 625.267 55.7365 625.267 Q59.3707 625.267 61.1763 621.726 Q63.005 618.161 63.005 611.054 Q63.005 603.925 61.1763 600.383 Q59.3707 596.818 55.7365 596.818 M55.7365 593.115 Q61.5467 593.115 64.6022 597.721 Q67.6809 602.305 67.6809 611.054 Q67.6809 619.781 64.6022 624.388 Q61.5467 628.971 55.7365 628.971 Q49.9264 628.971 46.8477 624.388 Q43.7921 619.781 43.7921 611.054 Q43.7921 602.305 46.8477 597.721 Q49.9264 593.115 55.7365 593.115 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip110)" d="M75.8984 622.42 L80.7827 622.42 L80.7827 628.3 L75.8984 628.3 L75.8984 622.42 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip110)" d="M103.815 597.814 L92.0095 616.263 L103.815 616.263 L103.815 597.814 M102.588 593.74 L108.468 593.74 L108.468 616.263 L113.398 616.263 L113.398 620.152 L108.468 620.152 L108.468 628.3 L103.815 628.3 L103.815 620.152 L88.2132 620.152 L88.2132 615.638 L102.588 593.74 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip110)" d="M57.218 225.252 Q53.6069 225.252 51.7782 228.817 Q49.9726 232.358 49.9726 239.488 Q49.9726 246.594 51.7782 250.159 Q53.6069 253.701 57.218 253.701 Q60.8522 253.701 62.6578 250.159 Q64.4865 246.594 64.4865 239.488 Q64.4865 232.358 62.6578 228.817 Q60.8522 225.252 57.218 225.252 M57.218 221.548 Q63.0281 221.548 66.0837 226.154 Q69.1624 230.738 69.1624 239.488 Q69.1624 248.215 66.0837 252.821 Q63.0281 257.404 57.218 257.404 Q51.4078 257.404 48.3291 252.821 Q45.2736 248.215 45.2736 239.488 Q45.2736 230.738 48.3291 226.154 Q51.4078 221.548 57.218 221.548 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip110)" d="M77.3799 250.853 L82.2641 250.853 L82.2641 256.733 L77.3799 256.733 L77.3799 250.853 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip110)" d="M92.4956 222.173 L110.852 222.173 L110.852 226.108 L96.778 226.108 L96.778 234.58 Q97.7965 234.233 98.815 234.071 Q99.8335 233.886 100.852 233.886 Q106.639 233.886 110.019 237.057 Q113.398 240.228 113.398 245.645 Q113.398 251.224 109.926 254.326 Q106.454 257.404 100.134 257.404 Q97.9585 257.404 95.69 257.034 Q93.4446 256.664 91.0372 255.923 L91.0372 251.224 Q93.1206 252.358 95.3428 252.914 Q97.565 253.469 100.042 253.469 Q104.046 253.469 106.384 251.363 Q108.722 249.256 108.722 245.645 Q108.722 242.034 106.384 239.928 Q104.046 237.821 100.042 237.821 Q98.1668 237.821 96.2918 238.238 Q94.44 238.654 92.4956 239.534 L92.4956 222.173 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><circle clip-path="url(#clip112)" cx="273.501" cy="1541.32" r="14.4" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.84"></circle>
+<circle clip-path="url(#clip112)" cx="1412.42" cy="1712.01" r="14.4" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.84"></circle>
+<circle clip-path="url(#clip112)" cx="2551.34" cy="95.7325" r="14.4" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.84"></circle>
+<circle clip-path="url(#clip112)" cx="3690.25" cy="193.131" r="14.4" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.84"></circle>
 </svg>
 </div>
 </div>
 </section>
 <section id="makie.jl" class="slide level2">
 <h2>Makie.jl</h2>
-<div id="40" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb38-1"><a aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CairoMakie</span>, <span class="bu">Distributions</span></span>
-<span id="cb38-2"><a aria-hidden="true" tabindex="-1"></a>Makie.<span class="fu">heatmap</span>(<span class="fu">rand</span>(<span class="fu">Normal</span>(), <span class="fu">X</span>(<span class="fl">100</span><span class="op">:</span><span class="fl">10</span><span class="op">:</span><span class="fl">200</span>), <span class="fu">Y</span>([<span class="op">:</span>a, <span class="op">:</span>b, <span class="op">:</span>c])))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="46" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb42-1"><a aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CairoMakie</span>, <span class="bu">Distributions</span></span>
+<span id="cb42-2"><a aria-hidden="true" tabindex="-1"></a>Makie.<span class="fu">heatmap</span>(<span class="fu">rand</span>(<span class="fu">Normal</span>(), <span class="fu">X</span>(<span class="fl">100</span><span class="op">:</span><span class="fl">10</span><span class="op">:</span><span class="fl">200</span>), <span class="fu">Y</span>([<span class="op">:</span>a, <span class="op">:</span>b, <span class="op">:</span>c])))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="index_files/figure-revealjs/cell-21-output-1.svg" class="r-stretch"></section></section>
+<img data-src="index_files/figure-revealjs/cell-24-output-1.svg" class="r-stretch"></section></section>
+<section>
 <section id="integrations" class="title-slide slide level1 center">
 <h1>Integrations</h1>
 <ul>
-<li><a href="">Rasters.jl</a></li>
-<li><a href="">YAXArrays.jl</a></li>
-<li><a href="">ClimateBase.jl</a></li>
-<li><a href="">AstroImages.jl</a></li>
-<li><a href="">Arviz.jl</a></li>
-<li><a href="">DynamicGrids.jl</a></li>
-<li><a href="">PyramidScheme.jl</a></li>
+<li class="fragment">DimensionalData uses all abstract types so its extensible</li>
+<li class="fragment">Just <code>dims</code> and <code>rebuild</code> methods let other array types work like a <code>DimArray</code></li>
 </ul>
 </section>
-
-<section id="new-docs" class="title-slide slide level1 center">
-<h1>New Docs</h1>
-<p>(Thanks Lazaro Alonzo!)</p>
+<section id="some-packages-building-on-dimensionaldata.jl" class="slide level2">
+<h2>Some packages building on DimensionalData.jl</h2>
+<ul>
+<li class="fragment"><a href="">Rasters.jl</a></li>
+<li class="fragment"><a href="">YAXArrays.jl</a></li>
+<li class="fragment"><a href="">ClimateBase.jl</a></li>
+<li class="fragment"><a href="">AstroImages.jl</a></li>
+<li class="fragment"><a href="">Arviz.jl</a></li>
+<li class="fragment"><a href="">DynamicGrids.jl</a></li>
+<li class="fragment"><a href="">PyramidScheme.jl</a></li>
+<li class="fragment"><a href="">Jump.jl</a> (extension)</li>
+</ul>
+</section>
+<section id="thanks" class="slide level2">
+<h2>Thanks</h2>
+<p><br>
+<img data-src="https://contrib.rocks/image?repo=rafaqz/DimensionalData.jl"></p>
+<p>(And checkout the new docs by Lazaro Alonzo!)</p>
 <p><a href="https://rafaqz.github.io/DimensionalData.jl/v0.27.3/">Docs</a></p>
 
 <div class="quarto-auto-generated-content">
@@ -793,7 +864,7 @@ Make dimensional queries<br>
 
 </div>
 </div>
-</section>
+</section></section>
     </div>
   </div>
 
