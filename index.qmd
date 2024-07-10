@@ -30,14 +30,15 @@ execute:
 ::: {.incremental}
 - Geospatial data
   - named dimensions and lookup values are ubiquitous
+  - selecting spatial and temporal subsets is ubiquitous
   - there are a _lot_ of possible lookup configurations
-  - multi-array datasets are common (with shared dimensions)
+  - multi-array datasets are also common
 - ![xarray](https://xarray.dev/xarray-datastructure.png)
 :::
 
-# Dimensions
+# Concepts: Dimensions
 
-## Dimension are wrappers
+## Dimension are wrappers 
 
 ```{julia}
 #| echo: false
@@ -71,13 +72,14 @@ X(Not(At(70)))
 --- 
 
 \
-\
 "Standard" dimensions (90% of spatial data):
 
 ```{julia}
 X, Y, Z, Ti
 ```
-\
+
+. . .
+
 Arbitrary dimensions (everything else)
 
 ```{julia}
@@ -87,12 +89,25 @@ Dim{:name}
 # Lookups
 
 - Hold lookup values along a dimension
-- `AbstracArray`s with lookup traits like `Points` or `Intervals`
-- `Sampled` and `Categorical` are the most common
+- And traits like `Points` or `Intervals`
 - mostly detected automatically in array constructors
-- advanced topic - see the docs!
 
-# DimArray <: AbstractDimArray
+- - -
+
+You can define them manually when you need to:
+
+```{julia}
+using DimensionalData.Lookups
+l = Sampled(1:10; sampling=Intervals(Start()), order=ForwardOrdered(), span=Regular())
+```
+\
+```{julia}
+Sampled <: AbstractSampled <: Aligned <: Lookup <: AbstractVector
+```
+
+# DimArray Constructors
+
+- DimArray <: AbstractDimArray <: AbstractArray
 
 ```{julia}
 #| echo: false
@@ -130,7 +145,9 @@ Shorthands: `rand`, `fill`, `zeros`, `ones`
 rand(X(6), Y(10:2:20))
 ```
 
-# DimStack <: AbstractDimStack
+# DimStack Constructors
+
+- DimStack <: AbstractDimStack
 
 ## Layers with the same dimensions
 \
@@ -237,14 +254,16 @@ Makie.heatmap(rand(Normal(), X(100:10:200), Y([:a, :b, :c])))
 
 ## Some packages building on DimensionalData.jl
 
+::: {.nonincremental}
 - [Rasters.jl]()
 - [YAXArrays.jl]() 
 - [ClimateBase.jl]()
 - [AstroImages.jl]()
-- [Arviz.jl]()
-- [DynamicGrids.jl]()
 - [PyramidScheme.jl]()
-- [Jump.jl]() (extension)
+- [Arviz.jl]()
+- [JuMP.jl]() (extension)
+- [DynamicGrids.jl]()
+:::
 
 ## Thanks
 \
