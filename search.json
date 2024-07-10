@@ -4,7 +4,7 @@
     "href": "index.html#why-another-named-array-package",
     "title": "DimensionalData.jl",
     "section": "Why another named array package?",
-    "text": "Why another named array package?\n\n\nGeospatial data\n\nnamed dimensions and lookup values are ubiquitous\nthere are a lot of possible lookup configurations\nmulti-array datasets are common (with shared dimensions)\n\n\n\n\nxarray"
+    "text": "Why another named array package?\n\n\nGeospatial data\n\nnamed dimensions and lookup values are ubiquitous\nselecting spatial and temporal subsets is ubiquitous\nthere are a lot of possible lookup configurations\nmulti-array datasets are also common\n\n\n\n\nxarray"
   },
   {
     "objectID": "index.html#dimension-are-wrappers",
@@ -25,7 +25,7 @@
     "href": "index.html#n-dimensional",
     "title": "DimensionalData.jl",
     "section": "N dimensional",
-    "text": "N dimensional\nWith standard dimensions in a Tuple:\n\nA = DimArray(rand(3, 4), (X([:a, :b, :c]), Y(10.0:10:40.0)))\n\n╭─────────────────────────╮\n│ 3×4 DimArray{Float64,2} │\n├─────────────────────────┴─────────────────────────────────── dims ┐\n  ↓ X Categorical{Symbol} [:a, :b, :c] ForwardOrdered,\n  → Y Sampled{Float64} 10.0:10.0:40.0 ForwardOrdered Regular Points\n└───────────────────────────────────────────────────────────────────┘\n ↓ →  10.0       20.0        30.0       40.0\n  :a   0.241505   0.0282003   0.462848   0.337448\n  :b   0.370021   0.6171      0.588097   0.499839\n  :c   0.842621   0.509002    0.762115   0.143347"
+    "text": "N dimensional\nWith standard dimensions in a Tuple:\n\nA = DimArray(rand(3, 4), (X([:a, :b, :c]), Y(10.0:10:40.0)))\n\n╭─────────────────────────╮\n│ 3×4 DimArray{Float64,2} │\n├─────────────────────────┴─────────────────────────────────── dims ┐\n  ↓ X Categorical{Symbol} [:a, :b, :c] ForwardOrdered,\n  → Y Sampled{Float64} 10.0:10.0:40.0 ForwardOrdered Regular Points\n└───────────────────────────────────────────────────────────────────┘\n ↓ →  10.0       20.0       30.0        40.0\n  :a   0.981993   0.513781   0.0573086   0.133294\n  :b   0.597572   0.938506   0.687245    0.831078\n  :c   0.243421   0.560166   0.854638    0.592527"
   },
   {
     "objectID": "index.html#layers-with-the-same-dimensions",
@@ -95,7 +95,7 @@
     "href": "index.html#some-packages-building-on-dimensionaldata.jl",
     "title": "DimensionalData.jl",
     "section": "Some packages building on DimensionalData.jl",
-    "text": "Some packages building on DimensionalData.jl\n\nRasters.jl\nYAXArrays.jl\nClimateBase.jl\nAstroImages.jl\nArviz.jl\nDynamicGrids.jl\nPyramidScheme.jl\nJump.jl (extension)"
+    "text": "Some packages building on DimensionalData.jl\n\n\nRasters.jl\nYAXArrays.jl\nClimateBase.jl\nAstroImages.jl\nPyramidScheme.jl\nArviz.jl\nJuMP.jl (extension)\nDynamicGrids.jl"
   },
   {
     "objectID": "index.html#thanks",
