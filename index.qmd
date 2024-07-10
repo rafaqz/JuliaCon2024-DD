@@ -1,6 +1,6 @@
 ---
 title: "DimensionalData.jl"
-subtitle: ""
+subtitle: "Named dimensions for julia data"
 author:
   - name: Rafael Schouten
     orcid: 
@@ -28,7 +28,7 @@ execute:
 ## Why another named array package?
 
 ::: {.incremental}
-- Geospatial data
+- Geospatial data:
   - named dimensions and lookup values are ubiquitous
   - selecting spatial and temporal subsets is ubiquitous
   - there are a _lot_ of possible lookup configurations
